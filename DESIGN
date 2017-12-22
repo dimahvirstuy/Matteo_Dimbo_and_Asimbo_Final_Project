@@ -1,0 +1,10 @@
+Asim Kapparova, Matteo Wong, Dmytro Hvirtsman
+
+Problem:
+We are trying to make a system containing a server which can fork off several two-player games (stratego as a least viable product) using a client-side program hat each player would have, that would be connected either through a socket or by a mediating subserver.
+
+User Interface:
+As a minimum viable product, we will have the user interface as a 10x10 grid where the players can input coordinates for any controls or manipulations, For instance, during the setup stage a player may want to move the peice at 2x2 to 4x4, and so they would input 2244 (or 2 2 4 4). Potentially, we may choose to create some simple, NetLogo-esque graphic and mouse-interacting interface.
+
+Technical Design:
+
