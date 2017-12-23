@@ -7,4 +7,26 @@ User Interface:
 As a minimum viable product, we will have the user interface as a 10x10 grid where the players can input coordinates for any controls or manipulations, For instance, during the setup stage a player may want to move the peice at 2x2 to 4x4, and so they would input 2244 (or 2 2 4 4). Potentially, we may choose to create some simple, NetLogo-esque graphic and mouse-interacting interface.
 
 Technical Design:
+Networking design
 
+Stratego design
+Stratego is a 10x10 board game, so we would use a 10x10 array of integers as a value array. The pieces of Stratego would be represented with the integers -2 through 10. -2 Would be the flag, -1 would represent water (two 4x4 grids in the middle of the board where no piece can move), 0 would be empty spaces, 1 would be the spy, 2-9 would be regular pieces, with 2 being the scout (weakest) and 9 being the strongest, and 10 would be the bomb.
+There would also be a 10x10 loyalty array with values 0 (nobody controls the square), 1, or 2 (with 1 and 2 representing either user's control of the piece on a square).
+A setup function would create a default board setup for each player. By inputting the coordinates of two squares (such as 2 3 3 2), the user could swap the pieces at (2,3) and (3,2). Once the user is satisfied with their setup, they would type in "Ready" and would wait for their opponent to finish.
+To check whose turn it is, we would have a Turn variable that would be 0 or 1, and to update it we would do turn = 1 - turn.
+The essential loop would look like
+if (your turn) {
+   while (input move) {
+      if (!legal move)
+	 printf try again
+      else {
+         process move; update arrays
+      }
+   }
+   update turn counter
+}
+checking if a move is legal would involve:
+- if there is a piece at the original square
+- if you control that piece
+- if the square you are moving to is adjacent and free (unless the piece is a scout, in which case it must be in the direct line of sight, horizontally/vertically, of the piece)
+Processing the move would be a series of if statements checking what the two pieces are and seeing if there are any special rules regarding their interactions, and otherwise just using if (x>y)
