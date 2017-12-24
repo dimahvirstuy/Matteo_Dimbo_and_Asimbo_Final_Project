@@ -13,7 +13,8 @@ Our program will run between two computers through sockets. We would have a main
 We haven't learned sockets yet, but this is how the server would facilitate the handshake with two processes on a single machine:
 
 Client A would send the name of a FIFO to the server and wait on opening the FIFO. Then the server would send the name of the FIFO to client B, which would open and remove the FIFO. Then it would create a private FIFO, send the name to client A, and open. Client A would then open the other end of the private FIFO and remove it, then send confirmation.
-[@dima he also said something about using unnamed pipes in class maybe that's better? idk]
+
+Each client will have to catch any possible exit signals so that it can send a message to the other client that it is exiting (and thus the game should end) before it exits.
 
 Stratego design
 Stratego is a 10x10 board game, so we would use a 10x10 array of integers as a value array. The pieces of Stratego would be represented with the integers -2 through 10. -2 Would be the flag, -1 would represent water (two 4x4 grids in the middle of the board where no piece can move), 0 would be empty spaces, 1 would be the spy, 2-9 would be regular pieces, with 2 being the scout (weakest) and 9 being the strongest, and 10 would be the bomb.
@@ -25,7 +26,7 @@ A setup function would create a default board setup for each player. By inputtin
 To check whose turn it is, we would have a Turn variable that would be 0 or 1, and to update it we would do turn = 1 - turn.
 The essential loop would look like
 if (your turn) {
-   while (input move) {
+   while (input move [translate fgets into integers]) {
       if (!legal move)
 	 printf try again
       else {
@@ -39,3 +40,13 @@ checking if a move is legal would involve:
 - if you control that piece
 - if the square you are moving to is adjacent and free (unless the piece is a scout, in which case it must be in the direct line of sight, horizontally/vertically, of the piece)
 Processing the move would be a series of if statements checking what the two pieces are and seeing if there are any special rules regarding their interactions, and otherwise just using if (x>y)
+
+For our MVP, printing the board will just involve printing the numbers corresponding to the user's pieces, and any symbol for the opponent's pieces (say, 37).
+
+Ideally we will have a function that prints. It will have a while loop in a while loop going through every slot in the 10x10 array. Numbers for special pieces can be translated (-2 prints as "F" instead). We could also update the loyalty array to have 0s, 1s, 2s, 3s, and 4s. 0 would be empty or water, 1s would be pieces of one side that haven't been revealed and 2s would be pieces of the same side that are revealed, and 3/4 would act in the same way for the other side. By checking this array we could print some of the opponent's pieces when they are revealed.
+Ex:
+int r,c are the index being checked by the print function
+if ( (loyalty_array[r][c]==your_loyalty) || (loyalty==opponent's royalty && revealed)) 
+   translate number to symbol if necessary
+else if (opponent's piece not revealed)
+   print symbol for opponent piece
