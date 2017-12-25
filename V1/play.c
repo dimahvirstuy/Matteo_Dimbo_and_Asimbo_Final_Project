@@ -70,23 +70,24 @@ int display_board() {
   int i;
   int j;
   printf("NUETRAL BOARD:\n\n");
-  for (i = 0; i < 10; i++) {
+  for (i = 9; i != -1; i--) {
     printf("\n");
     for (j = 0; j < 10; j++) {
       if (j == 0) {
 	printf("| ");
       }
-      if (loyalty[j][i] == -2) {
-	printf("X |");
-	break;
+      if (loyalty[i][j] == -2) {
+	printf("X | ");
       }
-      if (loyalty[j][i] == -1) {
-	printf("_ |");
-	break;
+      else if (loyalty[i][j] == -1) {
+	printf("_ | ");
       }
-      printf("%d | ", loyalty[j][i]);
+      else {
+	printf("%d | ", loyalty[i][j]);
+      }
     }
   }
+  printf("\n");
   return 1;
 }
 int display_board_white() {
@@ -160,5 +161,9 @@ int display_board_black() {
   return 1;
 }
 int main() {
-  setup();
+  display_board_white();
+  display_board_black();
+  display_board();
+  
+  //setup();
 }
