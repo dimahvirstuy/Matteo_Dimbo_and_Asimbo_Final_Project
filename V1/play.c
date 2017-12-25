@@ -128,36 +128,35 @@ int display_board_black() {
   int i;
   int j;
   printf("BLACK BOARD:\n\n");
-  for (i = 0; i < 10; i++) {
+  for (i = 9; i != -1; i--) {
     printf("\n");
     for (j = 0; j < 10; j++) {
       if (j == 0) {
 	printf("| ");
       }
-      if (loyalty[j][i] == -2) {
-	printf("X |");
-	break;
+      if (loyalty[i][j] == -2) {
+	printf("X | ");
       }
-      if (loyalty[j][i] == -1) {
-	printf("_ |");
-	break;
+      else if (loyalty[i][j] == -1) {
+	printf("_ | ");
       }
-      if (loyalty[j][i] == 0) {
-	if (pieces[j][i] == 0) {
+      else if (loyalty[i][j] == 0) {
+	if (pieces[i][j] == 0) {
 	  printf("F | ");
-	  break;
 	}
-	if (pieces[j][i] == 11) {
+	else if (pieces[i][j] == 11) {
 	  printf("B | ");
-	  break;
 	}
-	printf("%d | ", pieces[j][i]);
+	else {
+	printf("%d | ", pieces[i][j]);
+	}
       }
-      if (loyalty[j][i] == 1) {
+      else if (loyalty[i][j] == 1) {
 	printf("O | ");
       }
     }
   }
+  printf("\n");
   return 1;
 }
 int main() {
