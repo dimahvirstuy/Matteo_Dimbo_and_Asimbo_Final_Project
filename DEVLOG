@@ -1,0 +1,14 @@
+------------------------------------
+Date: 12/22/17
+Work: Dima, Asim, Matteo in class worked on proposal. Figured out logistics of Stratego and discussed whether a server should faciliate interactions b/w clients or if the server should just facilitate a handshake b/w clients (did not decide)
+------------------------------------
+Date: 12/23/17
+Work: Dima, Matteo worked on DESIGN doc. Dima worked on question, Matteo on technical design
+------------------------------------
+Date: 12/24/17
+Work: Fiddled around with stratego.
+Dima made board and display_board_white() and display_board_black() and attempted a setup function
+Matteo generalized display_board_white/black into display_board() that takes parameters and will work for any 10x10 boards so the fx can be run across clients. Made the setup function by work by turning the input from xxxx where x is an integer to x x x x and parsing.
+------------------------------------
+Date:
+Work:
