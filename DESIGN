@@ -72,3 +72,25 @@ else if (opponent's piece not revealed)
 
 If it turns out just implementing stratego is simple/we have time, we will try to implement another game: Onitama.
 
+
+Timeline
+- 12/30 - stratego printing and swapping (basic setup)
+- 12/31 - stratego basic moves
+- 1/2 - finish stratego, one process
+- 1/5 - finish stratego w/ piping across two processes
+- 1/8 <could vary depending on when we learn sockets>  — finish strategy w/ networking
+- If we meet these deadlines, either:
+  - implement graphics (maybe use SDL/threads so we can give different colors or have symbols for opponent pieces)
+  - implement another game
+
+
+Work breakdown: we will all be working together on everything/exchanging ideas/doing bits of code/pseudocode but this is a basic breakdown that might change a bit
+- DESIGN doc: Everyone
+- stratego printing: Dima
+- stratego setup (swapping): Matteo
+- stratego basic moves: Asim
+- stratego all moves: Everyone
+- stratego game in single terminal w/ turns: Dima
+- stratego game multiple processes (MVP): Matteo, shouldn’t be hard to change from previous step 
+- stratego game across computers: everyone
+
