@@ -4,23 +4,38 @@ Problem:
 We are trying to make a system containing a server which can fork off several two-player games (stratego as a least viable product) using a client-side program hat each player would have, that would be connected either through a socket or by a mediating subserver.
 
 User Interface:
-As a minimum viable product, we will have the user interface as a 10x10 grid where the players can input coordinates for any controls or manipulations, For instance, during the setup stage a player may want to move the peice at 2x2 to 4x4, and so they would input 2 2 4 4. Potentially, we may choose to create some simple, NetLogo-esque graphic and mouse-interacting interface.
+As a minimum viable product, we will have the user interface as a 10x10 grid where the players can input coordinates for any controls or manipulations, For instance, during the setup stage a player may want to move the peice at 2x2 to 4x4, and so they would input 2 2 4 4. Pieces would move along the board instantaneously, and each user could only see their own piece. Later on we will try to make it so that you can see some of your opponent's pieces, and try to demarcate the difference w/ some sort of formatting (italicizing or something like that).
+
+
+Potentially, we may choose to create some simple, NetLogo-esque graphic and mouse-interacting interface.
 
 Technical Design:
+
+List of topics (each one is elaborated on more broadly later on):
+memory allocation - parsing command line input and creating game boards
+networking (sockets, pipes) - to facilitate games b/w machines or processes
+signals - so games exit properly
+semaphores - so two clients don't try to connect to server at same time; if we implement a server facilitating all moves instead of pipes b/w clients, then a semaphore to make sure only one client is telling the server to do things at a time.
+
+
 Networking design
 Our program will run between two computers through sockets. We would have a main server that undergoes a handshake with two clients, and then sets up a handshake between the two clients.
 
 We haven't learned sockets yet, but this is how the server would facilitate the handshake with two processes on a single machine:
 
-Client A would send the name of a FIFO to the server and wait on opening the FIFO. Then the server would send the name of the FIFO to client B, which would open and remove the FIFO. Then it would create a private FIFO, send the name to client A, and open. Client A would then open the other end of the private FIFO and remove it, then send confirmation.
+Server completes handshake with clients A, B.
+
+Client A would send the name of a FIFO to the server and block upon opening the FIFO. Then the server would send the name of the FIFO to client B, which would open and remove the FIFO. Then it would create a private FIFO, send the name to client A, and then block on open. Client A would then open the other end of the private FIFO and remove it, then send confirmation, then B would confirm to A that it received that message.
 
 Each client will have to catch any possible exit signals so that it can send a message to the other client that it is exiting (and thus the game should end) before it exits.
 
+A potential problem we see with having a direct pipe/socket between processes/machines is that it may not be as secure as having a central computer handle everything.
+
 Stratego design
-Stratego is a 10x10 board game, so we would use a 10x10 array of integers as a value array. The pieces of Stratego would be represented with the integers -2 through 10. -1 Would be the flag, -2 would represent water (two 4x4 grids in the middle of the board where no piece can move), 0 would be empty spaces, 10 would be the spy, 1-9 would be regular pieces, with 9 being the scout (weakest) and 1 being the strongest, and 11 would be the bomb.
+Stratego is a 10x10 board game, so we would use a 10x10 array of integers as a value array. The pieces of Stratego would be represented with the integers -2 through 10. -1 Would be the flag, -2 would represent water (two 4x4 grids in the middle of the board where no piece can move), 0 would be empty spaces, 10 would be the spy, 1-9 would be regular pieces, with 9 being the scout (weakest), 8 defusing bombs, 1 being the strongest, and 11 being the bomb.
 There would also be a 10x10 loyalty array with values 0 and 1 for each side, and -1 for empty and -2 for water.
 
-The two arrays would involve allocating memory so that they can be passed to different methods and modified accordingly.
+The two arrays would involve allocating memory so that they can be passed to different methods and modified accordingly. Each side would have a different array so that when it prints the user would have their pieces "closer" to them (rows 6-9 instead of 0-3), which would simulate real life. We would need to translate moves so that both players could update their arrays. This would be simple: coordinates would go from (a,b) to (9-a,9-b).
 
 A setup function would create a default board setup for each player. By inputting the coordinates of two squares (such as 2 3 3 2), the user could swap the pieces at (2,3) and (3,2). Once the user is satisfied with their setup, they would type in "Ready" and would wait for their opponent to finish.
 
@@ -42,14 +57,15 @@ checking if a move is legal would involve:
 - if there is a piece at the original square
 - if you control that piece
 - if the square you are moving to is adjacent and free (unless the piece is a scout, in which case it must be in the direct line of sight, horizontally/vertically, of the piece)
-Processing the move would be a series of if statements checking what the two pieces are and seeing if there are any special rules regarding their interactions, and otherwise just using if (x>y)
+Processing the move would be a series of if statements checking what the two pieces are and seeing if there are any special rules regarding their interactions (spy can kill a 1, 8 diffuses bomb, etc.), and otherwise just using if (x>y) else.
 
-For our MVP, printing the board will just involve printing the numbers corresponding to the user's pieces, and any symbol for the opponent's pieces (say, 37).
+We will have a function that prints a board rather than pieces. It will have a while loop in a while loop going through every slot in the 10x10 array. Numbers for special pieces can be translated (-2 prints as "X", -1 as "F", 0 as "_", 10 as "S"). Each space would have | separating it.
+Ex of one row: |B|F|B|9|S|2|6|7|4|4|
 
-Ideally we will have a function that prints. It will have a while loop in a while loop going through every slot in the 10x10 array. Numbers for special pieces can be translated (-2 prints as "F" instead). We could also update the loyalty array to have 0s, 1s, 2s, 3s, and 4s. 0 would be empty or water, 1s would be pieces of one side that haven't been revealed and 2s would be pieces of the same side that are revealed, and 3/4 would act in the same way for the other side. By checking this array we could print some of the opponent's pieces when they are revealed.
-Ex:
+We could also update the loyalty array to have 0s, 1s, 2s, 3s, and 4s. 0 would be empty or water, 1s would be pieces of one side that haven't been revealed and 2s would be pieces of the same side that are revealed, and 3/4 would act in the same way for the other side. By checking this array we could print some of the opponent's pieces when they are revealed.
+pseudocode:
 int r,c are the index being checked by the print function
 if ( (loyalty_array[r][c]==your_loyalty) || (loyalty==opponent's royalty && revealed)) 
    translate number to symbol if necessary
 else if (opponent's piece not revealed)
-   print symbol for opponent piece
+   print generic symbol for opponent piece
