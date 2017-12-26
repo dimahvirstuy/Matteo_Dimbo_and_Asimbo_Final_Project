@@ -69,3 +69,6 @@ if ( (loyalty_array[r][c]==your_loyalty) || (loyalty==opponent's royalty && reve
    translate number to symbol if necessary
 else if (opponent's piece not revealed)
    print generic symbol for opponent piece
+
+If it turns out just implementing stratego is simple/we have time, we will try to implement another game: Onitama.
+
