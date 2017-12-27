@@ -71,17 +71,17 @@ else if (opponent's piece not revealed)
    print generic symbol for opponent piece
 
 If it turns out just implementing stratego is simple/we have time, we will try to implement another game: Onitama.
-
+Onitama is not too complex: basically, there is a 5x5 board and 5 possible moves that players cycle through. The goal is to capture all of the opponent's pieces.
 
 Timeline
 - 12/30 - stratego printing and swapping (basic setup)
-- 12/31 - stratego basic moves
-- 1/2 - finish stratego, one process
-- 1/5 - finish stratego w/ piping across two processes
-- 1/8 <could vary depending on when we learn sockets>  — finish strategy w/ networking
+- 1/1 - stratego basic moves
+- 1/4 - finish stratego, one process
+- 1/6 - finish stratego w/ piping across two processes
+- 1/9 <could vary depending on when we learn sockets>  — finish strategy w/ networking
 - If we meet these deadlines, either:
-  - implement graphics (maybe use SDL/threads so we can give different colors or have symbols for opponent pieces)
-  - implement another game
+  - implement graphics [we don't really know how this would work yet]
+  - implement another game: Onitama
 
 
 Work breakdown: we will all be working together on everything/exchanging ideas/doing bits of code/pseudocode but this is a basic breakdown that might change a bit
