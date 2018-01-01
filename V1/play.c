@@ -286,7 +286,7 @@ int is_valid_move(int game[10][10], int loyal[10][10], int player_loyalty, int m
   //printf("loyal[moves[0]][moves[1]]: %d\n",loyal[moves[0]][moves[1]]);
   //printf("loyal[moves[2]][moves[3]]: %d\n",loyal[moves[2]][moves[3]]);
   return (((loyal[moves[0]][moves[1]]==player_loyalty) &&
-	   (loyal[moves[2]][moves[3]]!=-2))
+	   (loyal[moves[2]][moves[3]]!=-2) && (loyal[moves[2]][moves[3]]!=player_loyalty))
 	  &&
 	  (game[moves[0]][moves[1]]!=11 && game[moves[0]][moves[1]]!=-1)
 	  &&
@@ -295,6 +295,8 @@ int is_valid_move(int game[10][10], int loyal[10][10], int player_loyalty, int m
 	   ((game[moves[0]][moves[1]]==9) && is_valid_move_scout(loyal,player_loyalty,moves))));
 
 }
+
+
 
 /*int setup() {
   printf ("white will now setup their side\n");
