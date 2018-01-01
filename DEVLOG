@@ -9,6 +9,24 @@ Date: 12/24/17
 Work: Fiddled around with stratego.
 Dima made board and display_board_white() and display_board_black() and attempted a setup function
 Matteo generalized display_board_white/black into display_board() that takes parameters and will work for any 10x10 boards so the fx can be run across clients. Made the setup function by work by turning the input from xxxx where x is an integer to x x x x and parsing.
+Asim finalized DESIGN
+------------------------------------
+Date: 12/30/17
+Work: is_valid_move function
+Matteo made is_valid_move
 ------------------------------------
 Date:
 Work:
+
+------------------------------------
+Date:
+Work:
+
+------------------------------------
+Date:
+Work:
+
+------------------------------------
+Date:
+Work:
+
