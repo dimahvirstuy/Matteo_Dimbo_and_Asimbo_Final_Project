@@ -309,6 +309,88 @@ int is_valid_move(int game[10][10], int loyal[10][10], int player_loyalty, int m
   }*/
 
 
+int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4]) {
+
+  if (is_valid_move(game,loyal,player_loyalty,moves)) {
+
+    if (loyal[moves[2]][moves[3]]==-1) {
+      printf("Your piece advances.\n");
+      swap(game,moves);
+      swap(loyal,moves);
+      return game[moves[2]][moves[3]];
+    } else if (loyal[moves[2]][moves[3]]==(1-player_loyalty)) {
+      int player=game[moves[0]][moves[1]];
+      int opponent=game[moves[2]][moves[3]];
+      //spy(10) and 1/everything else
+      //8 and 11(bomb)
+      //bomb and everything
+      //flag (-1)
+      if (player==10) {//player is spy
+	if (opponent==1) {//spy kills 1
+	  printf("Player: [%d] Opponent: [%d]. You advance, opponent piece defeated.\n",player,opponent);
+	  game[moves[2]][moves[3]]=player;
+	  game[moves[0]][moves[1]]=0;
+	  loyal[moves[2]][moves[3]]=player_loyalty;
+	  loyal[moves[0]][moves[1]]=-1;
+	  return player;
+
+	} else {
+	  printf("Player: [%d] Opponent: [%d]. Your piece is defeated.\n",player,opponent);
+	  game[moves[0]][moves[1]]=0;
+	  loyal[moves[0]][moves[1]]=-1;
+	  return opponent;
+
+	}
+      
+      } else if (opponent==11) {//opponent is bomb
+	if (player==8) {
+	  printf("Player: [%d] Opponent: [%d]. You advance, opponent piece defeated.\n",player,opponent);
+	  game[moves[2]][moves[3]]=player;
+	  game[moves[0]][moves[1]]=0;
+	  loyal[moves[2]][moves[3]]=player_loyalty;
+	  loyal[moves[0]][moves[1]]=-1;
+	  return player;
+
+	} else {
+	  printf("Player: [%d] Opponent: [%d]. Your piece is defeated.\n",player,opponent);
+	  game[moves[0]][moves[1]]=0;
+	  loyal[moves[0]][moves[1]]=-1;
+	  return opponent;
+	}
+
+      } else if (opponent==-1) {//opponent is flag
+	//victory
+      }
+
+      else if (player<opponent) {
+	printf("Player: [%d] Opponent: [%d]. You advance, opponent piece defeated.\n",player,opponent);
+	game[moves[2]][moves[3]]=player;
+	game[moves[0]][moves[1]]=0;
+	loyal[moves[2]][moves[3]]=player_loyalty;
+	loyal[moves[0]][moves[1]]=-1;
+	return player;
+      } else if (player>opponent) {
+	printf("Player: [%d] Opponent: [%d]. Your piece is defeated.\n",player,opponent);
+	game[moves[0]][moves[1]]=0;
+	loyal[moves[0]][moves[1]]=-1;
+	return opponent;
+      } else if (player==opponent) {
+	printf("Player: [%d] Opponent: [%d]. Both pieces die.\n",player,opponent);
+	game[moves[2]][moves[3]]=0;
+	game[moves[0]][moves[1]]=0;
+	loyal[moves[2]][moves[3]]=-1;
+	loyal[moves[0]][moves[1]]=-1;
+	return 0;
+      }
+
+
+    }
+
+  }
+  return -1;
+}
+
+
 int main() {
 
   //spy is 10, scout is 9, bomb-killer is 8, 1-7 are 1-7, flag is -1, bomb is 11, empty is 0, blocked is -2
