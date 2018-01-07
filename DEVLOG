@@ -15,13 +15,16 @@ Date: 12/30/17
 Work: is_valid_move function
 Matteo made is_valid_move
 ------------------------------------
-Date:
-Work:
+Date: 1/1/18
+Work: do_move function
+Asim: do_move function
+Matteo: small edits to is_valid_move
 
 ------------------------------------
-Date:
-Work:
-
+Date:1/5-1/6
+Work: improved game play/pipes
+Dima: pipes
+Matteo: improved printing of game play (opponent pieces revealed)
 ------------------------------------
 Date:
 Work:
