@@ -8,6 +8,10 @@
 #include <sys/sem.h>
 #include <signal.h>
 #include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <time.h>
+#define WKP "55023"
 
 
 int num_tokens(char *, char *);

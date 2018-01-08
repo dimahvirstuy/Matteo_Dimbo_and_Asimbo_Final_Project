@@ -1,0 +1,15 @@
+#include "heads.h"
+
+//this program will facilitate connection between clients by pairing them together so they can begin the game
+//Curent Working Version: NA
+
+int Setup_WKP () {
+  mkfifo(WKP, 0666);
+  fd = open(WKP, O_RDONLY);
+  return fd;
+  
+}
+
+int main () {
+
+}
