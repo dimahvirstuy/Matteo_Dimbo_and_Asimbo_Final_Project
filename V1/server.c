@@ -11,7 +11,7 @@ int Setup_WKP () {
   
 }
 
-int Establish_Connection_1 () {
+char * Establish_Connection_1 () {
   int fd; //recieving first signal
   fd = Setup_WKP();
   char private_pipe[100];
@@ -19,13 +19,13 @@ int Establish_Connection_1 () {
   int fd2; //confirming connection
   fd2 = open(private_pipe, O_WRONLY);
   char conf[100] = "Connection Confirmation";
-  write(fd2, conf, sizeof(conf));
+  write(*fd2, conf, sizeof(conf));
   char priv_conf[100];
   read(fd2, priv_conf, sizeof(priv_conf));
   char request[100] = "succesfully established connection, waiting for second client...";
   write(fd2, request, sizeof(request));
   close(fd);
-  return fd2;
+  return private_pipe;
   
 }
 int Establish_Connection_2 () {
@@ -33,7 +33,7 @@ int Establish_Connection_2 () {
   fd = Setup_WKP();
   char private_pipe[100];
   read(fd, private_pipe, sizeof(private_pipe));
-  int fd2; //confirming connection
+  //int fd2; //confirming connection
   fd2 = open(private_pipe, O_WRONLY);
   char conf[100] = "Connection Confirmation";
   write(fd2, conf, sizeof(conf));
@@ -45,12 +45,19 @@ int Establish_Connection_2 () {
   return fd2;
 }
 
+
+
+
 int main () {
+
+  int connection_pid;
+  
   while(1) {
+    int to_client;
     char * client_1;
     char * client_2;
-    client_1 = Establish_Connection_1;
-    client_2 = Establish_Connection_2;
+    client_1 = Establish_Connection_1();
+    client_2 = Establish_Connection_2();
     write(client_1, client_2, sizeof(client_2));
     write(client_2, client_1, sizeof(client_1));
     close(client_1);
