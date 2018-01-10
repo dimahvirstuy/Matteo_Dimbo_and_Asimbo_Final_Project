@@ -37,27 +37,37 @@ int establish_connection_client(int * fd, int * fd1) {
 int main() {
 
 
-  int to_server, from_server;
+  int to_server, from_server, from_client, to_client;
   char buffer[256];
 
 
   int which_client=establish_connection_client(&to_server, &from_server);
 
-  if (which_client) {
-
-
+  if (which_client) { //yes is the second client, no is the first
+    
+    read(from_server, buffer, sizeof(buffer));
+    close(from_server);
+    //close(to_server);
+    to_client = open(buffer, O_WRONLY);
+    sprintf(buffer, "%d", getpid());
+    mkfifo(buffer,0600);
+    write (to_client, buffer, sizeof(buffer));
+    from_client=open(buffer,O_RDONLY,0);
+    remove(buffer);
+    read (from_client, buffer, sizeof(buffer));
+    printf("%s\n", buffer);
+    
 
   } else {
-
-
-
+    sprintf(buffer, "%d", getpid());
+    mkfifo(buffer, 0600);
+    from_client=open(buffer, O_RDONLY, 0);
+    remove(buffer);
+    read(from_client,buffer,256);
+    int to_client=open(buffer,O_WRONLY,0);
+    write (to_client, "conf", sizeof("conf"));
+    
 
   }
-
-
-
-
-
-
 
 }
