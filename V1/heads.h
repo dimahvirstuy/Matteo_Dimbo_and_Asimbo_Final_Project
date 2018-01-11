@@ -12,6 +12,8 @@
 #include <errno.h>
 #include <time.h>
 #define WKP "55023"
+#define HANDSHAKE_BUFFER_SIZE 100
+#define ACK "confirmation"
 
 
 int num_tokens(char *, char *);
@@ -22,4 +24,6 @@ int swap(int board[10][10], int moves[4]);
 int setup(int pieces[10][10],int loyal[10][10],int side);
 int display_board(int board[10][10],int loyal[10][10],int side);
 int display_loyalty(int loyal[10][10]);
+int server_handshake(int *, int num);
+int client_handshake(int *);
 
