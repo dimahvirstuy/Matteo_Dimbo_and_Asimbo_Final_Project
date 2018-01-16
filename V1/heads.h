@@ -26,4 +26,6 @@ int display_board(int board[10][10],int loyal[10][10],int side);
 int display_loyalty(int loyal[10][10]);
 int server_handshake(int *, int num);
 int client_handshake(int *);
-
+char * board_setup_to_str(int pieces[10][10]);
+int setup_two(int pieces[10][10], int loyal[10][10], int);
+int reverse_board(int, int pieces[10][10], int loyal[10][10]);

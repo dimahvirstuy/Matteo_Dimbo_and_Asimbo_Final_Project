@@ -1,5 +1,6 @@
 #include "heads.h"
 #include <string.h>
+#include <signal.h>
 
 void to_upper(char * s) {
 
@@ -9,8 +10,15 @@ void to_upper(char * s) {
 
 }
 
-int main() {
+static void sighandler(int signo) {
+  if (signo==SIGINT) {
+    remove(WKP);
+    exit(0);
+  }
+}
 
+int main() {
+  signal(SIGINT,sighandler);
 
   int to_client_1;
   int client_0_pid;

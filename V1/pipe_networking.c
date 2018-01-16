@@ -87,7 +87,7 @@ int client_handshake(int *from_server) {
     return 0; //tells the parent function to write in initial client-client connection
   }
   else {
-    return 1; //tells the parent function to read in initial client-client connection
+    return 2; //tells the parent function to read in initial client-client connection
   }
   //return from_server;
 }

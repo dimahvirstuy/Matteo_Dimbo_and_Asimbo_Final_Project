@@ -103,6 +103,64 @@ int swap(int board[10][10], int moves[4]) {
 
 }
 
+int setup_two(int pieces[10][10], int loyal[10][10],int side) {
+  char input_string[100];
+  int input;
+
+  fgets(input_string, 100, stdin);
+  input_string[strlen(input_string)-1]=0;
+  char ** args=parse_args(input_string," ");
+  if (array_of_str_len(args)==1) {
+    int check=sscanf(args[0],"%d",&input);
+    if (!check) {
+      printf("not an integer, try again\n");
+    }
+    //free(args);
+    else if (input == 1) {
+      printf("to move the piece at (3, 0) to (2, 1), you would input 3021\n");
+    }
+    else if (input == 0) {
+      printf("setup complete\n");
+      free(args);
+      return 1;
+    }
+    else {
+      printf("invalid single integer, try again\n");
+      return 0;
+    }
+  }
+  else if (array_of_str_len(args)==4){
+
+    //char ** args=parse_args(input_string," ");
+    int coordinates[4];
+    sscanf(args[0],"%d",coordinates);
+    sscanf(args[1],"%d",coordinates+1);
+    sscanf(args[2],"%d",coordinates+2);
+    sscanf(args[3],"%d",coordinates+3);
+    /*printf("args[0]: %d\n",coordinates[0]);
+      printf("args[1]: %d\n",coordinates[1]);
+      printf("args[2]: %d\n",coordinates[2]);
+      printf("args[3]: %d\n",coordinates[3]);*/
+    if (is_valid_swap(coordinates,side,loyal)) {
+      swap(pieces,coordinates);
+      //free(args);
+
+    }
+    else {
+      //free(args);
+      printf("invalid swap, try again\n");
+      return 0;
+    }
+  }
+  else {
+    //free(args);
+    printf("invald input, try again\n");
+    return 0;
+  }
+  free(args);
+  return 0;
+}
+
 int setup(int pieces[10][10],int loyal[10][10], int side) {
   char input_string[100];
   int input;
@@ -423,6 +481,33 @@ int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4
 }
 
 
+char * board_setup_to_str(int pieces[10][10]) {
+
+  int r=6;
+  int c=0;
+  int place=0;
+  char * s=(char *)calloc(100,1);
+
+  for (;r<10;r++) {
+    while (c<10) {
+      sprintf(s+place,"%d",pieces[r][c]);
+      if (pieces[r][c]<10 && pieces[r][c]>0)
+	place++;
+      else
+	place+=2;
+      sprintf(s+place,"%c",' ');
+      place++;
+      c++;
+    }
+    c=0;
+  }
+  printf("S: [%s]\n",s);
+
+  return s;
+
+}
+
+/*
 int main() {
 
   //spy is 10, scout is 9, bomb-killer is 8, 1-7 are 1-7, flag is -1, bomb is 11, empty is 0, blocked is -2
@@ -455,7 +540,7 @@ int main() {
   do_move(pieces,loyalty,2,moves);
   display_board(pieces,loyalty,2);
   display_loyalty(loyalty);
-  /*
+  
   printf("\n-----testing is_valid_move()-----\n");
   int moves[]={6,4,4,4};
   if (is_valid_move(pieces,loyalty,1,moves))
@@ -469,10 +554,10 @@ int main() {
   if (is_valid_move(pieces,loyalty,0,moves2))
     printf("3,1,4,1 is valid\n");
   else
-  printf("error\n");*/
+  printf("error\n");
 
   //setup(game,sides,0);
   //setup();
   
   //setup();
-}
+  }*/
