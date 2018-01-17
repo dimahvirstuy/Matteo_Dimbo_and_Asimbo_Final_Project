@@ -68,7 +68,7 @@ int main() {
   //if (strlen(buffer)!=88)
   //continue;
   //printf("buffer: [%s]\n",buffer);
-  display_board(pieces,loyalty,2-which_client);
+  //display_board(pieces,loyalty,2-which_client);
   char ** new_stuff=parse_args(buffer," ");
   printf("pasred\n");
   int i=0;
@@ -76,7 +76,7 @@ int main() {
   int c=9;
   for (;r>=0;r--) {
     while (c>=0) {
-      printf("%d\n",i);
+      //printf("%d\n",i);
       sscanf(new_stuff[i],"%d",&(pieces[r][c]));
 	
       i++;
@@ -88,7 +88,31 @@ int main() {
 
   }
   free(new_stuff);
-  display_board(pieces,loyalty,2-which_client);
+  //display_board(pieces,loyalty,2-which_client);
+
+
+  //game play!!!!!!!!!!!!!
+
+  
+  while (1) {
+
+    if (which_client==turn) {
+      fgets(buffer,sizeof(buffer),stdin);
+
+    } else {
+
+
+
+    }
+    turn = 2-turn;
+
+
+  }
+
+  
+  close(up);
+  close(down);
+}
 
   /*
     fd_set read_fds;
@@ -165,8 +189,7 @@ int main() {
     }
       
     }*/
-  close(up);
-  close(down);
+
 
 
   
@@ -204,7 +227,7 @@ int main() {
     }*/
 
 
-}
+
 
 
 
