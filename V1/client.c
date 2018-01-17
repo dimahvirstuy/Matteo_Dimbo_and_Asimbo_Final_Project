@@ -53,9 +53,49 @@ int main() {
 
   reverse_board(which_client,pieces,loyalty);
 
-  fd_set read_fds;
+  setup(pieces, loyalty, which_client);
+  char * set_board=board_setup_to_str(pieces);
+  printf("set_board: [%s]\n",set_board);
+  write(up,set_board,HANDSHAKE_BUFFER_SIZE);
+  free(set_board);
   
-  while (1) {
+
+  read(down,buffer,HANDSHAKE_BUFFER_SIZE);
+  printf("buffer: [%s]\n",buffer);
+
+      
+  //printf("buffer len: %d\n",strlen(buffer));
+  //if (strlen(buffer)!=88)
+  //continue;
+  //printf("buffer: [%s]\n",buffer);
+  display_board(pieces,loyalty,2-which_client);
+  char ** new_stuff=parse_args(buffer," ");
+  printf("pasred\n");
+  int i=0;
+  int r=3;
+  int c=9;
+  for (;r>=0;r--) {
+    while (c>=0) {
+      printf("%d\n",i);
+      sscanf(new_stuff[i],"%d",&(pieces[r][c]));
+	
+      i++;
+      c--;
+	       
+    }
+    c=9;
+    //reading from other client
+
+  }
+  free(new_stuff);
+  display_board(pieces,loyalty,2-which_client);
+
+  /*
+    fd_set read_fds;
+
+
+  
+    while (1) {
 
     display_board(pieces,loyalty,which_client);
     printf("input the x coordinate and y coordinate of the piece you would like to move, followed by the x and y coordinates of the destination, with each coordinate separated by spaces. Or input 0 if you do not wish to make and further changes, or 1 if you would like an example:\n");
@@ -72,56 +112,59 @@ int main() {
     printf("post select\n");
 
     if (FD_ISSET(STDIN_FILENO, &read_fds)) {//if reading from stdin
-      printf("reading stdin\n");
-      int check=setup_two(pieces, loyalty, which_client);
-      if (check==1) {
-	char * set_board=board_setup_to_str(pieces);
-	printf("set_board: [%s]\n",set_board);
-	write(up,set_board,HANDSHAKE_BUFFER_SIZE);
-	free(set_board);
-	break;
-      }
-      //reading from stdin
+    printf("reading stdin\n");
+    //fgets(buffer,sizeof(buffer),stdin);
+    //write(up,buffer,sizeof(buffer));
+    int check=setup_two(pieces, loyalty, which_client);
+    if (check==1) {
+    char * set_board=board_setup_to_str(pieces);
+    printf("set_board: [%s]\n",set_board);
+    write(up,set_board,HANDSHAKE_BUFFER_SIZE);
+    free(set_board);
+    break;
+    }
+    //reading from stdin
     }
 
     if (FD_ISSET(down,&read_fds)) {//if reading from other client
-      printf("reading from other client\n");
-      //read(down,buffer,HANDSHAKE_BUFFER_SIZE);
-      //printf("buffer: [%s]\n",buffer);
-      //read(down,buffer,HANDSHAKE_BUFFER_SIZE);
-      //printf("buffer: [%s]\n",buffer);
-      read(down,buffer,HANDSHAKE_BUFFER_SIZE);
-      printf("buffer: [%s]\n",buffer);
+    printf("reading from other client\n");
+    //read(down,buffer,HANDSHAKE_BUFFER_SIZE);
+    //printf("buffer: [%s]\n",buffer);
+    //read(down,buffer,HANDSHAKE_BUFFER_SIZE);
+    //printf("buffer: [%s]\n",buffer);
+    read(down,buffer,HANDSHAKE_BUFFER_SIZE);
+    printf("buffer: [%s]\n",buffer);
 
-      //printf("buffer len: %d\n",strlen(buffer));
-      if (strlen(buffer)!=88)
-	continue;
-      //printf("buffer: [%s]\n",buffer);
-      display_board(pieces,loyalty,2-which_client);
-      char ** new_stuff=parse_args(buffer," ");
-      printf("pasred\n");
-      int i=0;
-      int r=3;
-      int c=9;
-      for (;r>=0;r--) {
-	while (c>=0) {
-	  printf("%d\n",i);
-	  sscanf(new_stuff[i],"%d",&(pieces[r][c]));
+      
+    //printf("buffer len: %d\n",strlen(buffer));
+    if (strlen(buffer)!=88)
+    continue;
+    //printf("buffer: [%s]\n",buffer);
+    display_board(pieces,loyalty,2-which_client);
+    char ** new_stuff=parse_args(buffer," ");
+    printf("pasred\n");
+    int i=0;
+    int r=3;
+    int c=9;
+    for (;r>=0;r--) {
+    while (c>=0) {
+    printf("%d\n",i);
+    sscanf(new_stuff[i],"%d",&(pieces[r][c]));
 	
-	  i++;
-	  c--;
+    i++;
+    c--;
 	       
-	}
-	c=9;
-	//reading from other client
-
-      }
-      free(new_stuff);
-      display_board(pieces,loyalty,2-which_client);
+    }
+    c=9;
+    //reading from other client
 
     }
-
-  }
+    free(new_stuff);
+    display_board(pieces,loyalty,2-which_client);
+      
+    }
+      
+    }*/
   close(up);
   close(down);
 

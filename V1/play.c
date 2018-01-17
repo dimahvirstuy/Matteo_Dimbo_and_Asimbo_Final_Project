@@ -501,7 +501,8 @@ char * board_setup_to_str(int pieces[10][10]) {
     }
     c=0;
   }
-  printf("S: [%s]\n",s);
+  s[strlen(s)]='\n';
+  //printf("S: [%s]\n",s);
 
   return s;
 
