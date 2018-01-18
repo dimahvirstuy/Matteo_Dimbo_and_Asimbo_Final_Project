@@ -6,9 +6,6 @@
 //int loyalty[10][10] = {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {-1, -1, -2, -2, -1, -1, -2, -2, -1, -1}, {-1, -1, -2, -2, -1, -1, -2, -2, -1, -1}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
 
-
-
-
 //returns number of tokens separated by delim in string s
 
 int num_tokens(char * s, char * delim){
@@ -24,13 +21,9 @@ int num_tokens(char * s, char * delim){
   //if (!strcmp(s,"exit"))
   //printf("exit command num tokens\n");
   return ret;
-
-
 }
 
-
 char** parse_args(char * line, char * delim) {
-
   char ** s=(char **)calloc(sizeof(char *),num_tokens(line, delim)+1);
   //printf("line: %s\n",line);
   int i=0;
@@ -43,8 +36,6 @@ char** parse_args(char * line, char * delim) {
     i++;
   }
   return s;
-
-
 }
 
 int array_of_str_len(char ** s) {
@@ -83,7 +74,6 @@ int array_of_str_len(char ** s) {
   return 1;
   }*/
 
-
 int is_valid_swap(int args[4],int side,int loyal[10][10]) {
   int i=((args[0]>-1 && args[0]<10) &&
 	 (args[1]>-1 && args[1]<10) &&
@@ -95,12 +85,10 @@ int is_valid_swap(int args[4],int side,int loyal[10][10]) {
 }
 
 int swap(int board[10][10], int moves[4]) {
-
   int temp=board[moves[0]][moves[1]];
   board[moves[0]][moves[1]]=board[moves[2]][moves[3]];
   board[moves[2]][moves[3]]=temp;
   return 1;
-
 }
 
 int setup_two(int pieces[10][10], int loyal[10][10],int side) {
@@ -130,7 +118,6 @@ int setup_two(int pieces[10][10], int loyal[10][10],int side) {
     }
   }
   else if (array_of_str_len(args)==4){
-
     //char ** args=parse_args(input_string," ");
     int coordinates[4];
     sscanf(args[0],"%d",coordinates);
@@ -144,7 +131,6 @@ int setup_two(int pieces[10][10], int loyal[10][10],int side) {
     if (is_valid_swap(coordinates,side,loyal)) {
       swap(pieces,coordinates);
       //free(args);
-
     }
     else {
       //free(args);
@@ -189,7 +175,6 @@ int setup(int pieces[10][10],int loyal[10][10], int side) {
       }
     }
     else if (array_of_str_len(args)==4){
-
       //char ** args=parse_args(input_string," ");
       int coordinates[4];
       sscanf(args[0],"%d",coordinates);
@@ -215,11 +200,8 @@ int setup(int pieces[10][10],int loyal[10][10], int side) {
       printf("invald input, try again\n");
     }
     free(args);
-  }
-      
-       
+  }      
   return 1;
- 
 }
 
 //int **s are self-explanatory; side = which side is calling (0 is black, 2 is white)
@@ -308,16 +290,13 @@ int reverse_board(int side, int game[10][10], int loyal[10][10]) {
     return 1;
   }
   return 0;
-
 }
 
 int xor(int a, int b) {
   return (a || b) && !(a && b);
-
 }
 
 int is_valid_move_scout(int loyal[10][10],int player_loyalty, int moves[4]) {
-
   printf("scout check\n");
   if (moves[3]-moves[1]>1) {
     int i=moves[1]+1;
@@ -328,7 +307,6 @@ int is_valid_move_scout(int loyal[10][10],int player_loyalty, int moves[4]) {
 	return 0;
       i++;
     }
-
   } else {
     int i=moves[0]+1;
     while (i<moves[2]) {
@@ -338,12 +316,9 @@ int is_valid_move_scout(int loyal[10][10],int player_loyalty, int moves[4]) {
 	return 0;
       i++;
     }
-    
-
   }
   return 1;
 }
-
 
 int is_valid_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4]) {
   //is piece at square moves(0,1) your loyalty
@@ -368,10 +343,7 @@ int is_valid_move(int game[10][10], int loyal[10][10], int player_loyalty, int m
 	  (xor(abs(moves[3]-moves[1])==1,abs(moves[2]-moves[0])==1)
 	   ||
 	   ((game[moves[0]][moves[1]]==9) && is_valid_move_scout(loyal,player_loyalty,moves))));
-
 }
-
-
 
 /*int setup() {
   printf ("white will now setup their side\n");
@@ -382,7 +354,6 @@ int is_valid_move(int game[10][10], int loyal[10][10], int player_loyalty, int m
   display_loyalty();
   return 1;
   }*/
-
 
 int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4]) {
   if (player_loyalty%2==1) player_loyalty--;
@@ -421,7 +392,6 @@ int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4
 	  //reveal
 	  if (loyal[moves[2]][moves[3]]%2==0) loyal[moves[2]][moves[3]]++;
 	  return opponent;
-
 	}
       
       } else if (opponent==11) {//opponent is bomb
@@ -443,7 +413,6 @@ int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4
 	  if (loyal[moves[2]][moves[3]]%2==0) loyal[moves[2]][moves[3]]++;
 	  return opponent;
 	}
-
       } else if (opponent==-1) {//opponent is flag
 	//victory
       }
@@ -472,17 +441,12 @@ int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4
 	loyal[moves[0]][moves[1]]=-1;
 	return 0;
       }
-
-
     }
-
   }
   return -1;
 }
 
-
 char * board_setup_to_str(int pieces[10][10]) {
-
   int r=6;
   int c=0;
   int place=0;
@@ -505,9 +469,7 @@ char * board_setup_to_str(int pieces[10][10]) {
   //printf("S: [%s]\n",s);
 
   return s;
-
 }
-
 /*
 int main() {
 
@@ -518,13 +480,10 @@ int main() {
   //0 is black, 1 is revealed black, 2 is white, 3 is revealed white
   int loyalty[10][10] = {{2, 2, 2, 2, 2, 2, 2, 2, 2, 2}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2}, {-1, -1, -2, -2, -1, -1, -2, -2, -1, -1}, {-1, -1, -2, -2, -1, -1, -2, -2, -1, -1}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-
   //int board[10][10];
   //    {{11, 11, 11, 11, 11, 11, 1, 2, 3, 3}, {4, 4, 4, 5, 5, 5, 5, 6, 6, 6}, {6, 7, 7, 7, 7, 8, 8, 8, 8, 8}, {9, 9, 9, 9, 9, 9, 9, 9, 10, -1}, {0, 0, -2, -2, 0, 0, -2, -2, 0, 0}, {0, 0, -2, -2, 0, 0, -2, -2, 0, 0}, {11, 11, 11, 11, 11, 11, 1, 2, 3, 3}, {4, 4, 4, 5, 5, 5, 5, 6, 6, 6}, {6, 7, 7, 7, 7, 8, 8, 8, 8, 8}, {9, 9, 9, 9, 9, 9, 9, 9, 10, -1}};
 
-
   display_board(pieces,loyalty,0);
- 
 
   display_board(pieces,loyalty,2);
  
