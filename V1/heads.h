@@ -15,7 +15,7 @@
 #define HANDSHAKE_BUFFER_SIZE 100
 #define ACK "confirmation"
 
-
+int do_move(int pieces[10][10],int loyalty[10][10],int,int coord[4]);
 int num_tokens(char *, char *);
 char ** parse_args(char *, char *);
 int array_of_str_len(char **);

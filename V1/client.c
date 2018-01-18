@@ -93,14 +93,50 @@ int main() {
 
   //game play!!!!!!!!!!!!!
 
-  
-  while (1) {
+    while (1) {
 
     if (which_client==turn) {
+      printf("input move:\n");
       fgets(buffer,sizeof(buffer),stdin);
+      buffer[strlen(buffer)-1]=0;
+      write(up,buffer,sizeof(buffer));
+      char ** args=parse_args(buffer," ");
+      int coordinates[4];
+      if (!sscanf(args[0],"%d",coordinates))
+	continue;
+      if (!sscanf(args[1],"%d",coordinates+1))
+	continue;
+      if (!sscanf(args[2],"%d",coordinates+2))
+	continue;
+      if (!sscanf(args[3],"%d",coordinates+3))
+	continue;
+      do_move(pieces,loyalty,which_client,coordinates);
+      display_board(pieces,loyalty,which_client);
+      
 
     } else {
-
+      printf("awaiting opponent's move\n");
+      read(down,buffer,sizeof(buffer));
+      printf("received: [%s]\n",buffer);
+      char ** args=parse_args(buffer," ");
+      int coordinates[4];
+      sscanf(args[0],"%d",coordinates);
+      sscanf(args[1],"%d",coordinates+1);
+      sscanf(args[2],"%d",coordinates+2);
+      sscanf(args[3],"%d",coordinates+3);
+    /*if (!sscanf(args[0],"%d",coordinates))
+	continue;
+      if (!sscanf(args[1],"%d",coordinates+1))
+	continue;
+      if (!sscanf(args[2],"%d",coordinates+2))
+	continue;
+      if (!sscanf(args[3],"%d",coordinates+3))
+      continue;*/
+      int i=0;
+      for (;i<4;i++)
+	coordinates[i]=9-coordinates[i];
+      do_move(pieces,loyalty,2-which_client,coordinates);
+      display_board(pieces,loyalty,which_client);
 
 
     }
@@ -108,10 +144,7 @@ int main() {
 
 
   }
-
   
-  close(up);
-  close(down);
 }
 
   /*
