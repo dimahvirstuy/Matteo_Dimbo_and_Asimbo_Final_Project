@@ -1,7 +1,6 @@
 #include "heads.h"
 
 int server_handshake(int *to_client, int num) {
-
   int from_client, ret;
 
   char buffer[HANDSHAKE_BUFFER_SIZE];
@@ -49,7 +48,6 @@ write(*to_client,"succesfully established connection, connecting to first client
   returns the file descriptor for the downstream pipe.
   =========================*/
 int client_handshake(int *from_server) {
-
   int to_server;
   char buffer[HANDSHAKE_BUFFER_SIZE];
 
