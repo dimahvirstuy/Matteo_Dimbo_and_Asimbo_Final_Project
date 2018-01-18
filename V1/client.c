@@ -1,7 +1,6 @@
 #include "heads.h"
 
 int main() {
-
   int which_client;
   int from_server;
   int up, down;
@@ -11,7 +10,6 @@ int main() {
 
   if (which_client)
     { //yes is the second client, no is the first
-    
       read(from_server, buffer, sizeof(buffer));
       close(from_server);
       //close(to_server);
@@ -22,9 +20,7 @@ int main() {
       down=open(buffer,O_RDONLY,0);
       remove(buffer);
       read (down, buffer, sizeof(buffer));
-      printf("[client 1] [%s]\n", buffer);
-    
-
+      printf("[client 1] [%s]\n", buffer);   
     } else
     {//first client
       close(from_server);
@@ -36,14 +32,10 @@ int main() {
       up=open(buffer,O_WRONLY,0);
       write (up, "conf", sizeof("conf"));
       printf("wrote conf\n");
-
-    
-
     }
 
   int turn=0;
   //spy is 10, scout is 9, bomb-killer is 8, 1-7 are 1-7, flag is -1, bomb is 11, empty is 0, blocked is -2
-
   
   int pieces[10][10] = { {11,-1,11,9,6,8,5,3,1,8}, {5,11,2,9,8,6,8,5,10,11}, {11,3,9,4,9,7,8,11,7,4}, {9,6,9,9,5,6,7,6,9,7}, {0,0,-2,-2,0,0-2,-2,0,0}, {0,0,-2,-2,0,0-2,-2,0,0}, {9,5,9,7,5,9,9,5,6,9}, {6,4,7,6,8,7,11,4,9,6}, {3,11,2,11,9,8,3,11,10,8}, {11,-1,11,5,8,4,9,1,8,7} };
 
@@ -59,11 +51,9 @@ int main() {
   write(up,set_board,HANDSHAKE_BUFFER_SIZE);
   free(set_board);
   
-
   read(down,buffer,HANDSHAKE_BUFFER_SIZE);
   printf("buffer: [%s]\n",buffer);
-
-      
+  
   //printf("buffer len: %d\n",strlen(buffer));
   //if (strlen(buffer)!=88)
   //continue;
@@ -90,11 +80,8 @@ int main() {
   free(new_stuff);
   //display_board(pieces,loyalty,2-which_client);
 
-
   //game play!!!!!!!!!!!!!
-
     while (1) {
-
     if (which_client==turn) {
       printf("input move:\n");
       fgets(buffer,sizeof(buffer),stdin);
@@ -112,7 +99,6 @@ int main() {
 	continue;
       do_move(pieces,loyalty,which_client,coordinates);
       display_board(pieces,loyalty,which_client);
-      
 
     } else {
       printf("awaiting opponent's move\n");
@@ -137,28 +123,17 @@ int main() {
 	coordinates[i]=9-coordinates[i];
       do_move(pieces,loyalty,2-which_client,coordinates);
       display_board(pieces,loyalty,which_client);
-
-
     }
     turn = 2-turn;
-
-
-  }
-  
+  } 
 }
-
   /*
     fd_set read_fds;
-
-
-  
     while (1) {
 
     display_board(pieces,loyalty,which_client);
     printf("input the x coordinate and y coordinate of the piece you would like to move, followed by the x and y coordinates of the destination, with each coordinate separated by spaces. Or input 0 if you do not wish to make and further changes, or 1 if you would like an example:\n");
     //fflush(stdout);
-
-    
 
     FD_ZERO(&read_fds);
     FD_SET(STDIN_FILENO, &read_fds);//add stdin
@@ -191,8 +166,7 @@ int main() {
     //printf("buffer: [%s]\n",buffer);
     read(down,buffer,HANDSHAKE_BUFFER_SIZE);
     printf("buffer: [%s]\n",buffer);
-
-      
+     
     //printf("buffer len: %d\n",strlen(buffer));
     if (strlen(buffer)!=88)
     continue;
@@ -222,9 +196,6 @@ int main() {
     }
       
     }*/
-
-
-
   
   //working chat
   /*while (1) {
@@ -258,9 +229,3 @@ int main() {
     turn=2-turn;
 
     }*/
-
-
-
-
-
-
