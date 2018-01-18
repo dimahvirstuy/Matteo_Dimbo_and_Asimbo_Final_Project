@@ -3,8 +3,6 @@
 //this program will facilitate connection between clients by pairing them together so they can begin the game
 //Curent Working Version: handles clients, waits for two connections and pairs them with eachother, then loops to handle more clients
 
-
-
 char * establish_connection (int num, int * to_client) {
   mkfifo(WKP,0600);
   printf("[server] waiting client %d connection\n",num);
@@ -31,17 +29,13 @@ char * establish_connection (int num, int * to_client) {
   } else {//connection 0
     strcpy(priv_conf,"succesfully established connection, await connection from first client...");
     free(private_pipe);
-  }
-  
+  }  
   write(*to_client, priv_conf, sizeof(priv_conf));
   close(from_client);
-  return private_pipe;
-  
+  return private_pipe;  
 }
-
 /*
 char * Establish_Connection_2 (int  * fd2) {
-
   mkfifo(WKP,0600);
   int from_client=open(WKP,O_RDONLY,0); 
   //char private_pipe[100];
@@ -58,12 +52,10 @@ char * Establish_Connection_2 (int  * fd2) {
   char priv_conf[100];
   read(from_client, priv_conf, sizeof(priv_conf));
   strcpy(priv_conf,"succesfully established connection, await connection from first client...");
-
-  
+ 
   write(*to_client, priv_conf, sizeof(priv_conf));
   close(from_client);
   return private_pipe;
-
   
     int fd; //recieving first signal
     fd = Setup_WKP();
@@ -83,10 +75,7 @@ char * Establish_Connection_2 (int  * fd2) {
 }
 */
 
-
-
 int main () {
-
   int connection_pid;
   
   while(1) {
