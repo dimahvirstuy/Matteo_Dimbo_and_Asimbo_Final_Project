@@ -226,7 +226,7 @@ int display_board(int board[10][10], int loyal[10][10], int side) {
       else if (loyal[i][j] == -1) {
 	printf("_ | ");
       }
-      else if (loy == side) {
+      else if (loy == side || (loy-1==side)) {
 	if (board[i][j] == -1) {
 	  printf("F | ");
 	}
@@ -242,6 +242,9 @@ int display_board(int board[10][10], int loyal[10][10], int side) {
       }
       else if (loyal[i][j] == 2-side) {//opponent, not revealed
 	printf("0 | ");
+      }
+      else if (loyal[i][j]==3-side) {
+	printf("%d~| ",board[i][j]);
       }
       /*else if (loyal[i][j]==3-side ) {//opponent, revealed
 	printf("%d | ",board[i][j]
@@ -386,13 +389,15 @@ int is_valid_move(int game[10][10], int loyal[10][10], int player_loyalty, int m
   return 1;
   }*/
 
-int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4]) {
+int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4], int is_turn) {
   if (player_loyalty%2==1) player_loyalty--;
   if (is_valid_move(game,loyal,player_loyalty,moves)) {
     printf("valid\n");
     //if advancing to empty square
     if (loyal[moves[2]][moves[3]]==-1) {
-      printf("Your piece advances.\n");
+      if (is_turn) printf("Your piece advances.\n");
+      else printf("Opponent piece advances.\n");
+      
       swap(game,moves);
       swap(loyal,moves);
       return game[moves[2]][moves[3]];
@@ -407,7 +412,8 @@ int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4
       
       if (player==10) {//player is spy
 	if (opponent==1) {//spy kills 1
-	  printf("Player: [%d] Opponent: [%d]. You advance, opponent piece defeated.\n",player,opponent);
+	  if (is_turn) printf("Player: [%d] Opponent: [%d]. You advance, opponent piece defeated.\n",player,opponent);
+	  else printf("Opponent: [%d] Player: [%d]. Opponent advances, your piece defeated.\n",player,opponent);
 	  game[moves[2]][moves[3]]=player;
 	  game[moves[0]][moves[1]]=0;
 	  loyal[moves[2]][moves[3]]=player_loyalty;
@@ -417,7 +423,8 @@ int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4
 	  return player;
 
 	} else {//everything other than 1 kills spy
-	  printf("Player: [%d] Opponent: [%d]. Your piece is defeated.\n",player,opponent);
+	  if (is_turn) printf("Player: [%d] Opponent: [%d]. Your piece is defeated.\n",player,opponent);
+	  else printf("Opponent: [%d] Player: [%d]. Your piece wins.\n",player,opponent);
 	  game[moves[0]][moves[1]]=0;
 	  loyal[moves[0]][moves[1]]=-1;
 	  //reveal
@@ -427,7 +434,8 @@ int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4
       
       } else if (opponent==11) {//opponent is bomb
 	if (player==8) {//8 defuses bomb
-	  printf("Player: [%d] Opponent: [%d]. You advance, opponent piece defeated.\n",player,opponent);
+	  if (is_turn) printf("Player: [%d] Opponent: [%d]. You advance, opponent piece defeated.\n",player,opponent);
+	  else printf("Opponent: [%d] Player: [%d]. Opponent advances, your piece defeated.\n",player,opponent);
 	  game[moves[2]][moves[3]]=player;
 	  game[moves[0]][moves[1]]=0;
 	  loyal[moves[2]][moves[3]]=player_loyalty;
@@ -437,7 +445,9 @@ int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4
 	  return player;
 
 	} else {//bomb kills everything else
-	  printf("Player: [%d] Opponent: [%d]. Your piece is defeated.\n",player,opponent);
+	  if (is_turn) printf("Player: [%d] Opponent: [%d]. Your piece is defeated.\n",player,opponent);
+	  else printf("Opponent: [%d] Player: [%d]. Your piece wins.\n",player,opponent);
+
 	  game[moves[0]][moves[1]]=0;
 	  loyal[moves[0]][moves[1]]=-1;
 	  //reveal
@@ -445,11 +455,15 @@ int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4
 	  return opponent;
 	}
       } else if (opponent==-1) {//opponent is flag
+
+	//printf("YOU WIN!\n");
+	return 100;
 	//victory
       }
       //do battle
       else if (player<opponent) {//you are stronger
-	printf("Normal move, you are stronger. Player: [%d] Opponent: [%d]. You advance, opponent piece defeated.\n",player,opponent);
+	if (is_turn) printf("Normal move, you are stronger. Player: [%d] Opponent: [%d]. You advance, opponent piece defeated.\n",player,opponent);
+	else printf("Normal move, you are weaker. Player: [%d] Opponent: [%d]. Your piece is defeated.\n",player,opponent);
 	game[moves[2]][moves[3]]=player;
 	game[moves[0]][moves[1]]=0;
 	loyal[moves[2]][moves[3]]=player_loyalty;
@@ -458,7 +472,9 @@ int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4
 	if (loyal[moves[2]][moves[3]]%2==0) loyal[moves[2]][moves[3]]++;
 	return player;
       } else if (player>opponent) {//you are weaker
-	printf("Normal move, you are weaker. Player: [%d] Opponent: [%d]. Your piece is defeated.\n",player,opponent);
+	
+	if (is_turn) printf("Normal move, you are weaker. Player: [%d] Opponent: [%d]. Your piece is defeated.\n",player,opponent);
+	else printf("Normal move, you are stronger. Player: [%d] Opponent: [%d]. You advance, opponent piece defeated.\n",player,opponent);
 	game[moves[0]][moves[1]]=0;
 	loyal[moves[0]][moves[1]]=-1;
 	//if loyalty of opponent is even, then it has not been revealed; reveal by making it odd

@@ -108,53 +108,81 @@ int main() {
       buffer[strlen(buffer)-1]=0;
       write(up,buffer,sizeof(buffer));
       char ** args=parse_args(buffer," ");
+      if (array_of_str_len(args)!=4) {
+	free(args);
+	printf("improper input\n");
+	continue;
+      }
+	
       int coordinates[4];
-      sscanf(args[0],"%d",coordinates);
+      /*sscanf(args[0],"%d",coordinates);
       sscanf(args[1],"%d",coordinates+1);
       sscanf(args[2],"%d",coordinates+2);
-      sscanf(args[3],"%d",coordinates+3);
+      sscanf(args[3],"%d",coordinates+3);*/
+
       int i=0;
 
-      /*if (!sscanf(args[0],"%d",coordinates))
+      if (!sscanf(args[0],"%d",coordinates))
 	continue;
       if (!sscanf(args[1],"%d",coordinates+1))
 	continue;
       if (!sscanf(args[2],"%d",coordinates+2))
 	continue;
       if (!sscanf(args[3],"%d",coordinates+3))
-      continue;*/
-      do_move(pieces,loyalty,which_client,coordinates);
+	continue;
+      free(args);
+      int res=do_move(pieces,loyalty,which_client,coordinates,1);
+      if (res==-1)
+	continue;
+      else if (res==100) {
+	printf("VICTORY\n");
+	break;
+      }
+
       display_board(pieces,loyalty,which_client);
-      display_loyalty(loyalty);
-      generic_print(pieces);
+      //display_loyalty(loyalty);
+      //generic_print(pieces);
     } else {
       printf("awaiting opponent's move\n");
       read(down,buffer,sizeof(buffer));
       printf("received: [%s]\n",buffer);
       char ** args=parse_args(buffer," ");
       int coordinates[4];
-      sscanf(args[0],"%d",coordinates);
-      sscanf(args[1],"%d",coordinates+1);
-      sscanf(args[2],"%d",coordinates+2);
-      sscanf(args[3],"%d",coordinates+3);
-    /*if (!sscanf(args[0],"%d",coordinates))
+      if (array_of_str_len(args)!=4) {
+	free(args);
+	printf("improper input\n");
+	continue;
+      }
+      if (!sscanf(args[0],"%d",coordinates))
 	continue;
       if (!sscanf(args[1],"%d",coordinates+1))
 	continue;
       if (!sscanf(args[2],"%d",coordinates+2))
 	continue;
       if (!sscanf(args[3],"%d",coordinates+3))
-      continue;*/
+	continue;
+	    /*      sscanf(args[0],"%d",coordinates);
+      sscanf(args[1],"%d",coordinates+1);
+      sscanf(args[2],"%d",coordinates+2);
+      sscanf(args[3],"%d",coordinates+3);*/
+      free(args);
+
       int i=0;
       for (;i<4;i++)
 	coordinates[i]=9-coordinates[i];
-      i=0;
+      /*i=0;
       for (;i<4;i++)
-	printf("coord %d: %d\n",i,coordinates[i]);
-      do_move(pieces,loyalty,2-which_client,coordinates);
+      printf("coord %d: %d\n",i,coordinates[i]);*/
+      int res=do_move(pieces,loyalty,2-which_client,coordinates,0);
+      if (res==-1)
+	continue;
+      else if (res==100) {
+	printf("YOU LOSE\n");
+	break;
+      }
       display_board(pieces,loyalty,which_client);
-      display_loyalty(loyalty);
-      generic_print(pieces);
+      //display_loyalty(loyalty);
+      //generic_print(pieces);
     }
     turn = 2-turn;
   } 
