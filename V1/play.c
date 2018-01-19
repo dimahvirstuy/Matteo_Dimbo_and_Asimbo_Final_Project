@@ -182,9 +182,9 @@ int setup(int pieces[10][10],int loyal[10][10], int side) {
       sscanf(args[2],"%d",coordinates+2);
       sscanf(args[3],"%d",coordinates+3);
       /*printf("args[0]: %d\n",coordinates[0]);
-      printf("args[1]: %d\n",coordinates[1]);
-      printf("args[2]: %d\n",coordinates[2]);
-      printf("args[3]: %d\n",coordinates[3]);*/
+	printf("args[1]: %d\n",coordinates[1]);
+	printf("args[2]: %d\n",coordinates[2]);
+	printf("args[3]: %d\n",coordinates[3]);*/
       if (is_valid_swap(coordinates,side,loyal)) {
 	swap(pieces,coordinates);
 	//free(args);
@@ -208,12 +208,15 @@ int setup(int pieces[10][10],int loyal[10][10], int side) {
 int display_board(int board[10][10], int loyal[10][10], int side) {
   int i;
   int j;
+  int loy;
   if (side%2==1) side--;
   printf("SIDE %d BOARD:\n\n",side);
   printf("-|-0-|-1-|-2-|-3-|-4-|-5-|-6-|-7-|-8-|-9-|");
   for (i = 0; i <10; i++) {
     printf("\n");
     for (j = 0; j < 10; j++) {
+      loy=loyal[i][j];
+      if (loy>-1 && loy%2==1) loy--;
       if (j == 0) {
 	printf("%d| ",i);
       }
@@ -223,7 +226,7 @@ int display_board(int board[10][10], int loyal[10][10], int side) {
       else if (loyal[i][j] == -1) {
 	printf("_ | ");
       }
-      else if (loyal[i][j] == side || loyal[i][j]==3-side) {
+      else if (loy == side) {
 	if (board[i][j] == -1) {
 	  printf("F | ");
 	}
@@ -296,24 +299,52 @@ int xor(int a, int b) {
   return (a || b) && !(a && b);
 }
 
+int distance(int a, int b) {
+  if (a>b)
+    return a-b;
+  else
+    return b-a;
+}
+
+int min(int a, int b) {
+  if (a>b)
+    return b;
+  else
+    return a;
+}
+
+int max(int a, int b) {
+  if (a>b)
+    return a;
+  else
+    return b;
+}
+
 int is_valid_move_scout(int loyal[10][10],int player_loyalty, int moves[4]) {
   printf("scout check\n");
-  if (moves[3]-moves[1]>1) {
-    int i=moves[1]+1;
-    while (i<moves[3]) {
+  if (abs(moves[3]-moves[1])>1) {
+    int i=min(moves[1],moves[3])+1;
+    if (moves[2]!=moves[0])
+      return 0;
+    while (distance(i,max(moves[1],moves[3]))>0) {
       int check=loyal[moves[0]][i];
       if (check>0 && check%2==1) check--;
-      if (check!=player_loyalty)
+      if (check==player_loyalty || check==-2 || check==2-player_loyalty)
 	return 0;
       i++;
     }
-  } else {
-    int i=moves[0]+1;
-    while (i<moves[2]) {
+  } else if (abs(moves[2]-moves[0])>1){
+    int i=min(moves[0],moves[2])+1;
+    if (moves[3]!=moves[1])
+      return 0;
+    while (distance(i,max(moves[0],moves[2]))>0) {
+      //printf("scout check i: %d\n",i);
       int check=loyal[i][moves[1]];
       if (check>0 && check%2==1) check--;
-      if (check!=player_loyalty)
+      if (check==player_loyalty || check==-2 || check==2-player_loyalty) {
+	printf("scout check %d: %d\n",i,check);
 	return 0;
+      }
       i++;
     }
   }
@@ -340,7 +371,7 @@ int is_valid_move(int game[10][10], int loyal[10][10], int player_loyalty, int m
 	  &&
 	  (game[moves[0]][moves[1]]!=11 && game[moves[0]][moves[1]]!=-1)
 	  &&
-	  (xor(abs(moves[3]-moves[1])==1,abs(moves[2]-moves[0])==1)
+	  ((xor(abs(moves[3]-moves[1])==1,abs(moves[2]-moves[0])==1) && xor(abs(moves[3]-moves[1])==0,abs(moves[2]-moves[0])==0))
 	   ||
 	   ((game[moves[0]][moves[1]]==9) && is_valid_move_scout(loyal,player_loyalty,moves))));
 }
@@ -418,7 +449,7 @@ int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4
       }
       //do battle
       else if (player<opponent) {//you are stronger
-	printf("Player: [%d] Opponent: [%d]. You advance, opponent piece defeated.\n",player,opponent);
+	printf("Normal move, you are stronger. Player: [%d] Opponent: [%d]. You advance, opponent piece defeated.\n",player,opponent);
 	game[moves[2]][moves[3]]=player;
 	game[moves[0]][moves[1]]=0;
 	loyal[moves[2]][moves[3]]=player_loyalty;
@@ -427,14 +458,14 @@ int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4
 	if (loyal[moves[2]][moves[3]]%2==0) loyal[moves[2]][moves[3]]++;
 	return player;
       } else if (player>opponent) {//you are weaker
-	printf("Player: [%d] Opponent: [%d]. Your piece is defeated.\n",player,opponent);
+	printf("Normal move, you are weaker. Player: [%d] Opponent: [%d]. Your piece is defeated.\n",player,opponent);
 	game[moves[0]][moves[1]]=0;
 	loyal[moves[0]][moves[1]]=-1;
 	//if loyalty of opponent is even, then it has not been revealed; reveal by making it odd
 	if (loyal[moves[2]][moves[3]]%2==0) loyal[moves[2]][moves[3]]++;
 	return opponent;
       } else if (player==opponent) {//tie
-	printf("Player: [%d] Opponent: [%d]. Both pieces die.\n",player,opponent);
+	printf("Normal move, tie. Player: [%d] Opponent: [%d]. Both pieces die.\n",player,opponent);
 	game[moves[2]][moves[3]]=0;
 	game[moves[0]][moves[1]]=0;
 	loyal[moves[2]][moves[3]]=-1;
@@ -470,6 +501,7 @@ char * board_setup_to_str(int pieces[10][10]) {
 
   return s;
 }
+
 /*
 int main() {
 
@@ -483,23 +515,42 @@ int main() {
   //int board[10][10];
   //    {{11, 11, 11, 11, 11, 11, 1, 2, 3, 3}, {4, 4, 4, 5, 5, 5, 5, 6, 6, 6}, {6, 7, 7, 7, 7, 8, 8, 8, 8, 8}, {9, 9, 9, 9, 9, 9, 9, 9, 10, -1}, {0, 0, -2, -2, 0, 0, -2, -2, 0, 0}, {0, 0, -2, -2, 0, 0, -2, -2, 0, 0}, {11, 11, 11, 11, 11, 11, 1, 2, 3, 3}, {4, 4, 4, 5, 5, 5, 5, 6, 6, 6}, {6, 7, 7, 7, 7, 8, 8, 8, 8, 8}, {9, 9, 9, 9, 9, 9, 9, 9, 10, -1}};
 
-  display_board(pieces,loyalty,0);
+  
+  //display_board(pieces,loyalty,0);
 
-  display_board(pieces,loyalty,2);
+  //display_board(pieces,loyalty,2);
  
-  display_loyalty(loyalty);
+  //display_loyalty(loyalty);
 
-  reverse_board(2,pieces,loyalty);
-  printf("reversed board\n");
-  display_board(pieces,loyalty,0);
-  display_board(pieces,loyalty,2);
-  display_loyalty(loyalty);
+  //reverse_board(2,pieces,loyalty);
+  //printf("reversed board\n");
+  //display_board(pieces,loyalty,0);
+  //display_board(pieces,loyalty,2);
+  //display_loyalty(loyalty);
+  
 
   printf("testing do move\n");
-  int moves[]={6,4,5,4};
-  do_move(pieces,loyalty,2,moves);
-  display_board(pieces,loyalty,2);
-  display_loyalty(loyalty);
+  //int moves[]={6,4,5,4};
+  //do_move(pieces,loyalty,2,moves);
+  //display_board(pieces,loyalty,2);
+  //display_loyalty(loyalty);
+
+  char buffer[100];
+  while (1) {
+    display_board(pieces,loyalty,2);
+    printf("input move:\n");
+    fgets(buffer,sizeof(buffer),stdin);
+    char ** args=parse_args(buffer," ");
+    int coordinates[4];
+    sscanf(args[0],"%d",coordinates);
+    sscanf(args[1],"%d",coordinates+1);
+    sscanf(args[2],"%d",coordinates+2);
+    sscanf(args[3],"%d",coordinates+3);
+    do_move(pieces,loyalty,2,coordinates);
+    display_board(pieces,loyalty,2);
+
+
+  }
   
   printf("\n-----testing is_valid_move()-----\n");
   int moves[]={6,4,4,4};
@@ -520,4 +571,4 @@ int main() {
   //setup();
   
   //setup();
-  }*/
+}*/
