@@ -8,6 +8,15 @@
 
 //returns number of tokens separated by delim in string s
 
+int is_proper_input(char ** args) {
+  int i=0;
+  return (array_of_str_len(args)==4) &&
+    (sscanf(args[0],"%d",&i)) &&
+    (sscanf(args[1],"%d",&i)) &&
+    (sscanf(args[2],"%d",&i)) &&
+    (sscanf(args[3],"%d",&i));
+}
+
 int num_tokens(char * s, char * delim){
   //printf("s is %s\n",s);
   int ret=1;
@@ -155,6 +164,9 @@ int setup(int pieces[10][10],int loyal[10][10], int side) {
     printf("input the x coordinate and y coordinate of the piece you would like to move, followed by the x and y coordinates of the destination, with each coordinate separated by spaces. Or input 0 if you do not wish to make and further changes, or 1 if you would like an example\n");
     fgets(input_string, 100, stdin);
     input_string[strlen(input_string)-1]=0;
+    if(!strcmp(input_string,"exit")) {
+      return -37;
+    }
     char ** args=parse_args(input_string," ");
     if (array_of_str_len(args)==1) {
       int check=sscanf(args[0],"%d",&input);
