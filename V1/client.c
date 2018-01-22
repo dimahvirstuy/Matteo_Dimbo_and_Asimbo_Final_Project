@@ -94,7 +94,7 @@ int main() {
     close(down);
     exit(0);
   }
-  
+  printf("buffer: [%s]\n",buffer);
   //printf("buffer len: %d\n",strlen(buffer));
   //if (strlen(buffer)!=88)
   //continue;
@@ -122,12 +122,17 @@ int main() {
   //display_board(pieces,loyalty,2-which_client);
 
   //game play!!!!!!!!!!!!!
-    while (1) {
+  while (1) {
     if (which_client==turn) {
+      //printf("[client %d] down: %d | up : %d\n",which_client,down,up);
       //fseek(stdin,0,SEEK_END);
+      display_board(pieces,loyalty,which_client);
       printf("input move:\n");
       fgets(buffer,sizeof(buffer),stdin);
       buffer[strlen(buffer)-1]=0;
+      char send[sizeof(buffer)];
+      strcpy(send,buffer);
+      
       if (!strcmp(buffer,"exit")) {
 	printf("exiting\n");
 	write(up,buffer,sizeof(buffer));
@@ -147,9 +152,9 @@ int main() {
 	
       int coordinates[4];
       /*sscanf(args[0],"%d",coordinates);
-      sscanf(args[1],"%d",coordinates+1);
-      sscanf(args[2],"%d",coordinates+2);
-      sscanf(args[3],"%d",coordinates+3);*/
+	sscanf(args[1],"%d",coordinates+1);
+	sscanf(args[2],"%d",coordinates+2);
+	sscanf(args[3],"%d",coordinates+3);*/
 
       int i=0;
 
@@ -165,25 +170,33 @@ int main() {
       sscanf(args[3],"%d",coordinates+3);
       
       
-      free(args);
+      //free(args);
       int res=do_move(pieces,loyalty,which_client,coordinates,1);
+      printf("move res: %d\n",res);
       if (res==-1)
 	continue;
       else if (res==100) {
 	printf("VICTORY\n");
 	break;
       }
-      write(up,args[0],sizeof(args[0]));
+      write(up,send,sizeof(send));
 
-      write(up,args[1],sizeof(args[1]));
-      write(up,args[2],sizeof(args[2]));
-      write(up,args[3],sizeof(args[3]));
+
+      printf("client %d wrote successfully\n",which_client);
+      free(args);
+      //write(up,args[1],sizeof(args[1]));
+      //write(up,args[2],sizeof(args[2]));
+      //write(up,args[3],sizeof(args[3]));
       
       display_board(pieces,loyalty,which_client);
       //display_loyalty(loyalty);
       //generic_print(pieces);
-    } else {
+    }
+
+    else {
+      //printf("[client %d] down: %d | up : %d\n",which_client,down,up);
       //fseek(stdin,0,SEEK_END);
+      display_board(pieces,loyalty,which_client);
       printf("awaiting opponent's move\n");
       //read(down,buffer,sizeof(buffer));
       //printf("received: [%s]\n",buffer);
@@ -195,6 +208,7 @@ int main() {
 	continue;
 	}*/
       read(down,buffer,sizeof(buffer));
+      //printf("buffer: [%s]\n",buffer);
       if (!strcmp(buffer,"exit")) {
 	printf("opponent exited.\nType anything to exit:\n");
 	//fseek(stdin,0,SEEK_END);
@@ -203,29 +217,20 @@ int main() {
 	close(down);
 	exit(0);
       }
-      sscanf(buffer,"%d",coordinates);
-      
-      read(down,buffer,sizeof(buffer));
-      sscanf(buffer,"%d",coordinates+1);
-      
-      read(down,buffer,sizeof(buffer));
-      sscanf(buffer,"%d",coordinates+2);
-      
-      read(down,buffer,sizeof(buffer));
-      sscanf(buffer,"%d",coordinates+3);
 
-	    /*      sscanf(args[0],"%d",coordinates);
+      char ** args = parse_args(buffer," ");
+      sscanf(args[0],"%d",coordinates);
       sscanf(args[1],"%d",coordinates+1);
       sscanf(args[2],"%d",coordinates+2);
-      sscanf(args[3],"%d",coordinates+3);*/
-      //free(args);
+      sscanf(args[3],"%d",coordinates+3);
+      free(args);
 
       int i=0;
       for (;i<4;i++)
 	coordinates[i]=9-coordinates[i];
       /*i=0;
-      for (;i<4;i++)
-      printf("coord %d: %d\n",i,coordinates[i]);*/
+	for (;i<4;i++)
+	printf("coord %d: %d\n",i,coordinates[i]);*/
       int res=do_move(pieces,loyalty,2-which_client,coordinates,0);
       //if (res==-1)
       //continue;
@@ -240,105 +245,112 @@ int main() {
     turn = 2-turn;
   } 
 }
-  /*
-    fd_set read_fds;
-    while (1) {
 
-    display_board(pieces,loyalty,which_client);
-    printf("input the x coordinate and y coordinate of the piece you would like to move, followed by the x and y coordinates of the destination, with each coordinate separated by spaces. Or input 0 if you do not wish to make and further changes, or 1 if you would like an example:\n");
-    //fflush(stdout);
 
-    FD_ZERO(&read_fds);
-    FD_SET(STDIN_FILENO, &read_fds);//add stdin
-    FD_SET(down, &read_fds);//add pipe
 
-    printf("before select\n");
-    select(down+1,&read_fds,NULL,NULL,NULL);
-    printf("post select\n");
 
-    if (FD_ISSET(STDIN_FILENO, &read_fds)) {//if reading from stdin
-    printf("reading stdin\n");
-    //fgets(buffer,sizeof(buffer),stdin);
-    //write(up,buffer,sizeof(buffer));
-    int check=setup_two(pieces, loyalty, which_client);
-    if (check==1) {
-    char * set_board=board_setup_to_str(pieces);
-    printf("set_board: [%s]\n",set_board);
-    write(up,set_board,HANDSHAKE_BUFFER_SIZE);
-    free(set_board);
-    break;
-    }
-    //reading from stdin
-    }
 
-    if (FD_ISSET(down,&read_fds)) {//if reading from other client
-    printf("reading from other client\n");
-    //read(down,buffer,HANDSHAKE_BUFFER_SIZE);
-    //printf("buffer: [%s]\n",buffer);
-    //read(down,buffer,HANDSHAKE_BUFFER_SIZE);
-    //printf("buffer: [%s]\n",buffer);
-    read(down,buffer,HANDSHAKE_BUFFER_SIZE);
-    printf("buffer: [%s]\n",buffer);
+
+
+/*
+  fd_set read_fds;
+  while (1) {
+
+  display_board(pieces,loyalty,which_client);
+  printf("input the x coordinate and y coordinate of the piece you would like to move, followed by the x and y coordinates of the destination, with each coordinate separated by spaces. Or input 0 if you do not wish to make and further changes, or 1 if you would like an example:\n");
+  //fflush(stdout);
+
+  FD_ZERO(&read_fds);
+  FD_SET(STDIN_FILENO, &read_fds);//add stdin
+  FD_SET(down, &read_fds);//add pipe
+
+  printf("before select\n");
+  select(down+1,&read_fds,NULL,NULL,NULL);
+  printf("post select\n");
+
+  if (FD_ISSET(STDIN_FILENO, &read_fds)) {//if reading from stdin
+  printf("reading stdin\n");
+  //fgets(buffer,sizeof(buffer),stdin);
+  //write(up,buffer,sizeof(buffer));
+  int check=setup_two(pieces, loyalty, which_client);
+  if (check==1) {
+  char * set_board=board_setup_to_str(pieces);
+  printf("set_board: [%s]\n",set_board);
+  write(up,set_board,HANDSHAKE_BUFFER_SIZE);
+  free(set_board);
+  break;
+  }
+  //reading from stdin
+  }
+
+  if (FD_ISSET(down,&read_fds)) {//if reading from other client
+  printf("reading from other client\n");
+  //read(down,buffer,HANDSHAKE_BUFFER_SIZE);
+  //printf("buffer: [%s]\n",buffer);
+  //read(down,buffer,HANDSHAKE_BUFFER_SIZE);
+  //printf("buffer: [%s]\n",buffer);
+  read(down,buffer,HANDSHAKE_BUFFER_SIZE);
+  printf("buffer: [%s]\n",buffer);
      
-    //printf("buffer len: %d\n",strlen(buffer));
-    if (strlen(buffer)!=88)
-    continue;
-    //printf("buffer: [%s]\n",buffer);
-    display_board(pieces,loyalty,2-which_client);
-    char ** new_stuff=parse_args(buffer," ");
-    printf("pasred\n");
-    int i=0;
-    int r=3;
-    int c=9;
-    for (;r>=0;r--) {
-    while (c>=0) {
-    printf("%d\n",i);
-    sscanf(new_stuff[i],"%d",&(pieces[r][c]));
+  //printf("buffer len: %d\n",strlen(buffer));
+  if (strlen(buffer)!=88)
+  continue;
+  //printf("buffer: [%s]\n",buffer);
+  display_board(pieces,loyalty,2-which_client);
+  char ** new_stuff=parse_args(buffer," ");
+  printf("pasred\n");
+  int i=0;
+  int r=3;
+  int c=9;
+  for (;r>=0;r--) {
+  while (c>=0) {
+  printf("%d\n",i);
+  sscanf(new_stuff[i],"%d",&(pieces[r][c]));
 	
-    i++;
-    c--;
+  i++;
+  c--;
 	       
-    }
-    c=9;
-    //reading from other client
+  }
+  c=9;
+  //reading from other client
 
-    }
-    free(new_stuff);
-    display_board(pieces,loyalty,2-which_client);
+  }
+  free(new_stuff);
+  display_board(pieces,loyalty,2-which_client);
       
-    }
+  }
       
-    }*/
+  }*/
   
-  //working chat
-  /*while (1) {
-    printf("up: %d | down: %d\n",up,down);
-    if (which_client==turn) {
+//working chat
+/*while (1) {
+  printf("up: %d | down: %d\n",up,down);
+  if (which_client==turn) {
 
-    char * s="[7 9 6 7 6 5 9 9 6 9 4 7 11 8 7 9 4 9 3 11 11 10 5 8 6 8 9 2 11 5 11 1 3 5 8 6 9 11 -1 8 ]";
-    printf("strlen: %d s: [%s]\n",strlen(s),s);
-    printf("input: ");
-    fgets(buffer, sizeof(buffer),stdin);
-    printf("wrote: %d\n",write(up,s,91));
-    //printf("wrote\n");
-    close(down);
-    close(up);
-    exit(0);
+  char * s="[7 9 6 7 6 5 9 9 6 9 4 7 11 8 7 9 4 9 3 11 11 10 5 8 6 8 9 2 11 5 11 1 3 5 8 6 9 11 -1 8 ]";
+  printf("strlen: %d s: [%s]\n",strlen(s),s);
+  printf("input: ");
+  fgets(buffer, sizeof(buffer),stdin);
+  printf("wrote: %d\n",write(up,s,91));
+  //printf("wrote\n");
+  close(down);
+  close(up);
+  exit(0);
 
-    } else {
+  } else {
 
-    //read(down,buffer,sizeof(buffer));
-    //printf("received input: [%s]\n",buffer);
+  //read(down,buffer,sizeof(buffer));
+  //printf("received input: [%s]\n",buffer);
       
-    //read(down,buffer,sizeof(buffer));
-    //printf("received input: [%s]\n",buffer);
-    read(down,buffer,sizeof(buffer));
-    printf("received input: [%s]\n",buffer);
-    close(down);
-    close(up);
-    exit(0);
+  //read(down,buffer,sizeof(buffer));
+  //printf("received input: [%s]\n",buffer);
+  read(down,buffer,sizeof(buffer));
+  printf("received input: [%s]\n",buffer);
+  close(down);
+  close(up);
+  exit(0);
 
-    }
-    turn=2-turn;
+  }
+  turn=2-turn;
 
-    }*/
+  }*/
