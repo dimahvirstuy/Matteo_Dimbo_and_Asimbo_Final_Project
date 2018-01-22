@@ -256,7 +256,16 @@ int display_board(int board[10][10], int loyal[10][10], int side) {
 	printf("0 | ");
       }
       else if (loyal[i][j]==3-side) {
-	printf("%d~| ",board[i][j]);
+	if (board[i][j] == 11) {
+	  printf("B~| ");
+	}
+	else if (board[i][j]==10) {
+	  printf("S~| ");
+	}
+	else {
+	  printf("%d~| ", board[i][j]);
+	}
+
       }
       /*else if (loyal[i][j]==3-side ) {//opponent, revealed
 	printf("%d | ",board[i][j]

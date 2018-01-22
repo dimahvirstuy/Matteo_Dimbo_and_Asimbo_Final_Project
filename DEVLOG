@@ -37,10 +37,48 @@ Matteo
 
 ------------------------------------
 Date: 1/9-1/10
-Work: establishing pipes between clients
+Work: tried to establish pipes between clients
 Matteo,Dima,Asim together (in class brainstorm, coding, etc.)
 
 ------------------------------------
-Date:
-Work:
+Date: 1/16
+Work: finished establishing pipes between clients
+Matteo: used pipe_networking.c, basic_server.c, client.c from past homeworks to expedite the process. wrote simple code for client-client handshake, facilitated by server
+
+------------------------------------
+Date: 1/17
+Work: Began doing game play
+Dima: established setup between players (setup functions called in client.c)
+Matteo: basic framework for moves going between players
+
+------------------------------------
+Date: 1/18
+Work: finished basic game play
+Asim: wrote in players getting input from stdin, doing move, writing to each other
+Matteo and Dima: debugging do_move
+
+------------------------------------
+Date: 1/19
+Work: found lots of bugs, located and began fixing them
+Dima and Matteo: realized is_valid_move and is_valid_move_scout did not do their jobs properly for several reasons (!= statements instead of ==, checking if squares were diagonal rather than adjacent, etc.). Found an infinite loop when one player exits. began to patch
+
+------------------------------------
+Date: 1/20
+Work: patched infinite loop
+Matteo: added sighandler, use "exit" to exit instead of ^c which avoids infinite loop
+
+------------------------------------
+Date: 1/21
+Work: sockets
+Dima: began working with sockets to replace pipes
+
+------------------------------------
+Date: 1/22
+Work: for some reason writing 4 integers didn't work, fixed this
+Matteo: wrote 4 integers in one string instead of in 4 strings, also fixed printing function (Tildas, print revealed bombs/spy properly).
+
+
+
+
+
 
