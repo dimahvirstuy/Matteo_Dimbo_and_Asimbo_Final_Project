@@ -91,3 +91,6 @@ If the first client to connect to the server exits (^c), it does not tell the se
    We couldn't fix on the socket version bc it would require putting a select() statement in the server and the server waits while establishing the socket() connection, rather than on read().
    
    Basically this bug means if one client connects and then disconnects before another client joins, the setup doesn't work.
+   
+
+Note on commits: Dima has a lot less because some of his commits are under the username DimaHvirStuy and some are dimahvirstuy which are separated and only the lowercase one shows up in the chart
