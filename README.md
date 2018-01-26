@@ -25,8 +25,11 @@ There are two standard 10x10 int arrays (int [][]). One has pieces and one has t
 #### Pipes
 
 `$ make pipes` -- compiles for connecting two processes on one machine
+
 `$ ./server` -- runs server. `$^c` to exit server
+
 `$ ./client` -- run twice on two separate terminals. 
+
 exiting
 
 `^c` to exit first client while it is waiting for a second client
@@ -37,8 +40,11 @@ exiting
 #### Sockets
 
 `$make` -- compiles for connecting two machines through a server
+
 `$./server` -- makes server
+
 `$./client <IP of server>` -- makes client. run twice on separate terminals. first client will input their IP and server initiates handshake between them
+	
 can exclude <IP of server> and it will use 127.0.0.1
 
 `^c` to exit first client while it is waiting for a second client
@@ -67,8 +73,11 @@ Sample board:
 Insert moves in format `$a b c d`. This will be interpreted as move piece at square (a,b) to (c,d), or if you are setting up, swap pieces at the same coordinates.
 
 Pieces go from 1-9. 1 is the strongest, 9 is the weakest. all pieces can only move one square adjacent to them, except the 9, which can move any number of squares horizontally or vertically (like a rook in chess).
+
 The S is a spy, which can kill the 1.
+
 Bombs kill everything except 8, which "defuse" bombs.
+
 Capture the flag(F) to win!
 
 see in-depth Stratego rules here: https://en.wikipedia.org/wiki/Stratego
