@@ -84,7 +84,7 @@ see in-depth Stratego rules here: https://en.wikipedia.org/wiki/Stratego
 
 ### Known Bugs
 
-If the first client to connect to the server exits (^c), it does not tell the server and the server doesn't start over.
+- If the first client to connect to the server exits (^c), it does not tell the server and the server doesn't start over.
 
    We couldn't fix this on the pipe version because the first client waits on open instead of read, so select would not work.
    
@@ -92,5 +92,7 @@ If the first client to connect to the server exits (^c), it does not tell the se
    
    Basically this bug means if one client connects and then disconnects before another client joins, the setup doesn't work.
    
+- in socket_client.c, the first client has to read from the server in order to get confirmation that there is a second client, however for some reason something was already in the socket so we had to make the client read twice (once to clear the socket). not sure why that is. 
+
 
 Note on commits: Dima has a lot less because some of his commits are under the username DimaHvirStuy and some are dimahvirstuy which are separated and only the lowercase one shows up in the chart
