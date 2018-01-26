@@ -8,6 +8,7 @@
 
 //returns number of tokens separated by delim in string s
 
+//checks if parameter args is in format {char*,char*,char*,char*} and each char* holds an int
 int is_proper_input(char ** args) {
   int i=0;
   return (array_of_str_len(args)==4) &&
@@ -17,6 +18,7 @@ int is_proper_input(char ** args) {
     (sscanf(args[3],"%d",&i));
 }
 
+//checks number of tokens in a string separated by a delim
 int num_tokens(char * s, char * delim){
   //printf("s is %s\n",s);
   int ret=1;
@@ -32,6 +34,7 @@ int num_tokens(char * s, char * delim){
   return ret;
 }
 
+//parses on delimeter
 char** parse_args(char * line, char * delim) {
   char ** s=(char **)calloc(sizeof(char *),num_tokens(line, delim)+1);
   //printf("line: %s\n",line);
@@ -47,42 +50,16 @@ char** parse_args(char * line, char * delim) {
   return s;
 }
 
+//number of char* in a char**
 int array_of_str_len(char ** s) {
   int i=0;
   while (s[i++]);
   return --i;//subtract one because while loop adds one extra
 }
 
-/*int white_setup() {
-  char input_string[5];
-  int input;
-  while(1) {
-  display_board_white();
-  printf("input the x coordinate and y coordinate of the piece you would like to move, followed by the x and y coordinates of the destination, or 0 if you do not wish to make and further changes, or 1 if you would like an example\n");
-  fgets(input_string, sizeof(input), stdin);
-  input_string[strlen(input_string)-1]=0;
-  sscanf(input_string,"%d",&input);
-  if (input == 1) {
-  printf("to move the piece at (3, 0) to (2, 1), you would input 3021\n");
-  }
-  else if (input == 0) {
-  printf("setup complete\n");
-  return 1;
-  }
-  else if (input <= 1000) {
-  if (input % 10 <= 3 && (input / 100) % 10 <= 3) {
-  int holder = pieces[(input / 100) % 10][input / 1000];
-  pieces[(input / 100) % 10][input / 1000] = pieces[input % 10][(input/10) % 10];
-  pieces[input % 10][(input/10) % 10] = holder;
-  }
-  }
-  else {
-  printf("invalid input, try again\n");
-  }
-  }
-  return 1;
-  }*/
 
+//checks if a swap in the board is valid. args[4] is the coordinates to be swapped, side is which side (0 or 2) the player trying to swap is, loyal is the loyalty board used to check against.
+//swap is only valid if coordinates (a,b) and (c,d) both belong to player loyalty
 int is_valid_swap(int args[4],int side,int loyal[10][10]) {
   int i=((args[0]>-1 && args[0]<10) &&
 	 (args[1]>-1 && args[1]<10) &&
@@ -93,6 +70,7 @@ int is_valid_swap(int args[4],int side,int loyal[10][10]) {
 
 }
 
+//facilitates a swap
 int swap(int board[10][10], int moves[4]) {
   int temp=board[moves[0]][moves[1]];
   board[moves[0]][moves[1]]=board[moves[2]][moves[3]];
@@ -100,20 +78,21 @@ int swap(int board[10][10], int moves[4]) {
   return 1;
 }
 
-
+//sets up board, given pieces/loyalty 2D arrays and the side of the player. more comments within
 int setup(int pieces[10][10],int loyal[10][10], int side) {
   char input_string[100];
   int input;
   while(1) {
     display_board(pieces,loyal,side);
+    
     printf("input the x coordinate and y coordinate of the piece you would like to move, followed by the x and y coordinates of the destination, with each coordinate separated by spaces. Or input 0 if you do not wish to make and further changes, or 1 if you would like an example\n");
-    fgets(input_string, 100, stdin);
+    fgets(input_string, 100, stdin);//gets user input
     input_string[strlen(input_string)-1]=0;
-    if(!strcmp(input_string,"exit")) {
+    if(!strcmp(input_string,"exit")) {//exiting
       return -37;
     }
-    char ** args=parse_args(input_string," ");
-    if (array_of_str_len(args)==1) {
+    char ** args=parse_args(input_string," ");//parses
+    if (array_of_str_len(args)==1) {//checks for special inputs (for help or completion)
       int check=sscanf(args[0],"%d",&input);
       if (!check) {
 	printf("not an integer, try again\n");
@@ -142,7 +121,7 @@ int setup(int pieces[10][10],int loyal[10][10], int side) {
 	printf("args[1]: %d\n",coordinates[1]);
 	printf("args[2]: %d\n",coordinates[2]);
 	printf("args[3]: %d\n",coordinates[3]);*/
-      if (is_valid_swap(coordinates,side,loyal)) {
+      if (is_valid_swap(coordinates,side,loyal)) {//checks if valid
 	swap(pieces,coordinates);
 	//free(args);
 
@@ -162,6 +141,7 @@ int setup(int pieces[10][10],int loyal[10][10], int side) {
 }
 
 //int **s are self-explanatory; side = which side is calling (0 is black, 2 is white)
+//translates integers in board to their symbol in the terminal
 int display_board(int board[10][10], int loyal[10][10], int side) {
   int i;
   int j;
@@ -221,6 +201,7 @@ int display_board(int board[10][10], int loyal[10][10], int side) {
   return 1;
 }
 
+//displays loyalties
 int display_loyalty(int loyal[10][10]) {
   int i;
   int j;
@@ -320,12 +301,14 @@ int is_valid_move_scout(int loyal[10][10],int player_loyalty, int moves[4]) {
   return 1;
 }
 
+//checks if a swap is valid, conditional statements are below
+//is piece at square moves(0,1) your loyalty
+//if not B or F (11 or -1)
+//is moves (2,3) adjacent OR is moves(0,1) a 9
+//if it is adjacent, is the square you are moving to valid
+//if it is a 9, are all the squares in between empty and is it in the same row or column
 int is_valid_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4]) {
-  //is piece at square moves(0,1) your loyalty
-  //if not B or F (11 or -1)
-  //is moves (2,3) adjacent OR is moves(0,1) a 9
-  //if it is adjacent, is the square you are moving to valid
-  //if it is a 9, are all the squares in between empty
+  
 
   //printf("loyal[moves[0]][moves[1]]: %d\n",loyal[moves[0]][moves[1]]);
   //printf("loyal[moves[2]][moves[3]]: %d\n",loyal[moves[2]][moves[3]]);
@@ -345,16 +328,7 @@ int is_valid_move(int game[10][10], int loyal[10][10], int player_loyalty, int m
 	   ((game[moves[0]][moves[1]]==9) && is_valid_move_scout(loyal,player_loyalty,moves))));
 }
 
-/*int setup() {
-  printf ("white will now setup their side\n");
-  white_setup();
-  printf ("black will now setup their side\n");
-  black_setup();
-  printf ("setup complete! here is the board\n");
-  display_loyalty();
-  return 1;
-  }*/
-
+//does a move, given game/loyalty boards and the moves. is_turn decides which message to print
 int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4], int is_turn) {
   if (player_loyalty%2==1) player_loyalty--;
   if (is_valid_move(game,loyal,player_loyalty,moves)) {
@@ -459,6 +433,8 @@ int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4
   return -1;
 }
 
+
+//converts the board to a string during setup. turns rows 6-9 into a string of 40 integers
 char * board_setup_to_str(int pieces[10][10]) {
   int r=6;
   int c=0;
