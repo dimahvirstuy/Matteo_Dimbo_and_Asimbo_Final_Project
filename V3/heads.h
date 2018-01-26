@@ -18,11 +18,7 @@
 #define WKP "55023"
 #define HANDSHAKE_BUFFER_SIZE 100
 #define ACK "confirmation"
-#ifndef NETWORKING_H
-#define NETWORKING_H
-#define BUFFER_SIZE 256
-#define PORT "9001"
-#define TEST_IP "127.0.0.1"
+
 int is_proper_input(char ** args);
 int do_move(int pieces[10][10],int loyalty[10][10],int,int coord[4],int);
 int num_tokens(char *, char *);
@@ -43,4 +39,4 @@ int server_setup();
 int server_connect(int sd);
 int client_setup(char * server);
 
-#endif
+

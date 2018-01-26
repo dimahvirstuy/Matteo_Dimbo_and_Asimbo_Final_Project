@@ -1,9 +1,5 @@
 socket: sockclient sockserver
 
-pipes: basic_server.c basic_client.c play.c
-	gcc -o server basic_server.c pipe_networking.c
-	gcc -o client basic_client.c pipe_networking.c play.c
-
 sockserver: socket_server.o networking.o
 	gcc -o server socket_server.o networking.o
 

@@ -26,11 +26,24 @@ There are two standard 10x10 int arrays (int [][]). One has pieces and one has t
 
 `$ make pipes` -- compiles for connecting two processes on one machine
 `$ ./server` -- runs server. `$^c` to exit server
-`$ ./client` -- run twice on two separate terminals. `$exit` to exit client
+`$ ./client` -- run twice on two separate terminals. 
+exiting
+
+`^c` to exit first client while it is waiting for a second client
+
+`$exit` to exit client while playing game
 
 
 #### Sockets
 
+`$make` -- compiles for connecting two machines through a server
+`$./server` -- makes server
+`$./client <IP of server>` -- makes client. run twice on separate terminals. first client will input their IP and server initiates handshake between them
+can exclude <IP of server> and it will use 127.0.0.1
+
+`^c` to exit first client while it is waiting for a second client
+
+`$exit` to exit client while playing game
 
 ### Gameplay Instructions
 
@@ -114,3 +127,10 @@ Bombs kill everything except 8, which "defuse" bombs.
 Capture the flag(F) to win!
 
 see in-depth Stratego rules here: https://en.wikipedia.org/wiki/Stratego 
+
+###Known Bugs
+
+If the first client to connect to the server exits (^c), it does not tell the server and the server doesn't start over.
+   We couldn't fix this on the pipe version because the first client waits on open instead of read, so select would not work.
+   We couldn't fix on the socket version bc it would require putting a select() statement in the server and the server waits while establishing the socket() connection, rather than on read().
+   Basically this bug means if one client connects and then disconnects before another client joins, the setup doesn't work.
