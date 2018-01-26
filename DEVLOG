@@ -77,8 +77,17 @@ Date: 1/22
 Work: for some reason writing 4 integers didn't work, fixed this
 Matteo: wrote 4 integers in one string instead of in 4 strings, also fixed printing function (Tildas, print revealed bombs/spy properly).
 
+------------------------------------
+Date: 1/24
+Work: debugging
+Matteo: debugged pipes not sending info properly due to exiting. made exiting work better in more instances (you can exit at most points in the code safely). added select() statements so exiting would work properly
+Asim: README, helped with debugging
 
-
+------------------------------------
+Date: 1/25-26
+Work: sockets
+Dima: began implementing sockets
+Matteo: finished implementing sockets, just used pipe infrastructure and switched out sockets. updated README, makefile
 
 
 
