@@ -271,7 +271,7 @@ int max(int a, int b) {
 }
 
 int is_valid_move_scout(int loyal[10][10],int player_loyalty, int moves[4]) {
-  printf("scout check\n");
+  //printf("scout check\n");
   if (abs(moves[3]-moves[1])>1) {
     int i=min(moves[1],moves[3])+1;
     if (moves[2]!=moves[0])
@@ -332,7 +332,7 @@ int is_valid_move(int game[10][10], int loyal[10][10], int player_loyalty, int m
 int do_move(int game[10][10], int loyal[10][10], int player_loyalty, int moves[4], int is_turn) {
   if (player_loyalty%2==1) player_loyalty--;
   if (is_valid_move(game,loyal,player_loyalty,moves)) {
-    printf("valid\n");
+    //printf("valid\n");
     //if advancing to empty square
     if (loyal[moves[2]][moves[3]]==-1) {
       if (is_turn) printf("Your piece advances.\n");

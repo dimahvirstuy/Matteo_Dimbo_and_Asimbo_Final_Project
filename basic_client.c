@@ -95,7 +95,7 @@ int main() {
     close(down);
     exit(0);
   }
-  printf("buffer: [%s]\n",buffer);
+  // printf("buffer: [%s]\n",buffer);
   //printf("buffer len: %d\n",strlen(buffer));
   //if (strlen(buffer)!=88)
   //continue;
@@ -136,9 +136,9 @@ int main() {
       FD_SET(STDIN_FILENO, &read_fds);//add stdin
       FD_SET(down, &read_fds);//add pipe
 
-      printf("before select\n");
+      //printf("before select\n");
       select(down+1,&read_fds,NULL,NULL,NULL);
-      printf("post select\n");
+      //printf("post select\n");
 
       if (FD_ISSET(down, &read_fds)) {//if reading from other client
 	read(down,buffer,sizeof(buffer));
@@ -196,17 +196,19 @@ int main() {
       
 	//free(args);
 	int res=do_move(pieces,loyalty,which_client,coordinates,1);
-	printf("move res: %d\n",res);
+	//printf("move res: %d\n",res);
 	if (res==-1)
 	  continue;
 	else if (res==100) {
 	  printf("VICTORY\n");
+	  write(up,send,sizeof(send));
+	  free(args);
 	  break;
 	}
 	write(up,send,sizeof(send));
 
 
-	printf("client %d wrote successfully\n",which_client);
+	//printf("client %d wrote successfully\n",which_client);
 	free(args);
 	//write(up,args[1],sizeof(args[1]));
 	//write(up,args[2],sizeof(args[2]));
@@ -230,9 +232,9 @@ int main() {
       FD_SET(STDIN_FILENO, &read_fds);//add stdin
       FD_SET(down, &read_fds);//add pipe
 
-      printf("before select\n");
+      //printf("before select\n");
       select(down+1,&read_fds,NULL,NULL,NULL);
-      printf("post select\n");
+      //printf("post select\n");
 
       if (FD_ISSET(STDIN_FILENO, &read_fds)) {//if reading from stdin
 

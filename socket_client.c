@@ -212,17 +212,19 @@ int main(int argc, char **argv) {
       
 	//free(args);
 	int res=do_move(pieces,loyalty,which_client,coordinates,1);
-	printf("move res: %d\n",res);
+	//printf("move res: %d\n",res);
 	if (res==-1)
 	  continue;
 	else if (res==100) {
 	  printf("VICTORY\n");
+	  write(use_socket,send,sizeof(send));
+	  free(args);
 	  break;
 	}
+	
+
 	write(use_socket,send,sizeof(send));
-
-
-	printf("client %d wrote successfully\n",which_client);
+	//printf("client %d wrote successfully\n",which_client);
 	free(args);
 	//write(up,args[1],sizeof(args[1]));
 	//write(up,args[2],sizeof(args[2]));
@@ -246,9 +248,9 @@ int main(int argc, char **argv) {
       FD_SET(STDIN_FILENO, &read_fds);//add stdin
       FD_SET(use_socket, &read_fds);//add pipe
 
-      printf("before select\n");
+      //printf("before select\n");
       select(use_socket+1,&read_fds,NULL,NULL,NULL);
-      printf("post select\n");
+      //printf("post select\n");
 
       if (FD_ISSET(STDIN_FILENO, &read_fds)) {//if reading from stdin
 
@@ -288,7 +290,8 @@ int main(int argc, char **argv) {
 	int i=0;
 	for (;i<4;i++)
 	  coordinates[i]=9-coordinates[i];
-  
+
+	//printf("doing opponent's move\n");
 	int res=do_move(pieces,loyalty,2-which_client,coordinates,0);
    
 	/*else*/ if (res==100) {
